@@ -18,6 +18,14 @@ import NewsList from '@/components/NewsList/NewsList'
 import Container from '@/components/Container/Container'
 import { usePageContext } from '@/contexts/PageContext'
 
+// ヒーロー画像の配列
+const heroImages = [
+  '/images/hero-photo-01.png',
+  '/images/hero-photo-02.png',
+  '/images/hero-photo-03.png',
+  '/images/hero-photo-04.png'
+]
+
 const menuCategories = [
   {
     category: 'cuts',
@@ -49,6 +57,7 @@ const menuCategories = [
 // useSearchParamsを使用するコンポーネント
 function HomeContent() {
   const [currentArticleId, setCurrentArticleId] = useState<string | null>(null)
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const { currentPage, setCurrentPage } = usePageContext()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -72,6 +81,71 @@ function HomeContent() {
 
   // ヒーローテキスト用のref
   const mainVisualTextRef = useRef<HTMLDivElement>(null);
+  
+  // 現在の画像インデックスを管理するref
+  const currentImageIndexRef = useRef(0);
+
+  // 画像切り替えアニメーション
+  const switchToNextImage = () => {
+    const mainImageElement = document.querySelector(`.${styles['main-image']}`)
+    if (!mainImageElement) return
+
+    const nextIndex = (currentImageIndexRef.current + 1) % heroImages.length
+    
+    // デバッグ用：現在の画像インデックスを出力
+    console.log('Current Index:', currentImageIndexRef.current, 'Next Image:', heroImages[nextIndex])
+    
+    // 画像のsrcを直接更新
+    const imgElement = mainImageElement as HTMLImageElement
+    imgElement.src = heroImages[nextIndex]
+    
+    // 次の画像を設定
+    currentImageIndexRef.current = nextIndex
+    setCurrentImageIndex(nextIndex)
+    
+    // 新しい画像のアニメーション
+    gsap.set(mainImageElement, {
+      scale: 1.1
+    })
+    
+    // opacityとスケールを別々にアニメーション
+    gsap.fromTo(mainImageElement, 
+      { opacity: 0 },
+      { 
+        opacity: 1,
+        duration: 1.5, 
+        delay: 0, 
+        ease: 'power2.out' 
+      }
+    )
+    
+    gsap.fromTo(mainImageElement, 
+      { scale: 1.1 },
+      { 
+        scale: 1,
+        duration: 9, 
+        delay: 0, 
+        ease: 'power2.out' 
+      }
+    )
+    
+    // 7秒後にopacityを0にフェードアウト
+    gsap.to(mainImageElement, {
+      opacity: 0,
+      duration: 0.5,
+      delay: 7,
+      ease: 'power2.inOut',
+      onComplete: () => {
+        // フェードアウト完了後に次の画像に切り替え
+        setTimeout(switchToNextImage, 100)
+      }
+    })
+  }
+
+  // デバッグ用：画像インデックスの変更を監視
+  useEffect(() => {
+    console.log('Image changed to:', heroImages[currentImageIndex])
+  }, [currentImageIndex])
 
   // URLパラメータを監視してニュース詳細を表示（newsクエリパラメータのみ）
   useEffect(() => {
@@ -137,15 +211,41 @@ function HomeContent() {
         },
       })
       
-      gsap.fromTo(mainImageElement, 
-        { scale: 1.1 },
-        { 
-          scale: 1, 
-          duration: 1.5, 
-          delay: 0, 
-          ease: 'power2.out' 
-        }
-      )
+      // 初期アニメーション
+      if (mainImageElement) {
+        // opacityとスケールを別々にアニメーション
+        gsap.fromTo(mainImageElement, 
+          { opacity: 0 },
+          { 
+            opacity: 1,
+            duration: 1.5, 
+            delay: 0.3, 
+            ease: 'power2.out' 
+          }
+        )
+        
+        gsap.fromTo(mainImageElement, 
+          { scale: 1.1 },
+          { 
+            scale: 1,
+            duration: 9, 
+            delay: 0.3, 
+            ease: 'power2.out' 
+          }
+        )
+        
+        // 7秒後にopacityを0にフェードアウト
+        gsap.to(mainImageElement, {
+          opacity: 0,
+          duration: 0.5,
+          delay: 7.3,
+          ease: 'power2.inOut',
+          onComplete: () => {
+            // フェードアウト完了後に次の画像に切り替え
+            setTimeout(switchToNextImage, 100)
+          }
+        })
+      }
     }
 
     if (contentWrapperElement) {
@@ -379,8 +479,9 @@ function HomeContent() {
         <div className={styles['main-visual']}> 
             <div className={styles['main-visual-inner']}>
               <div className={styles['main-image-wrapper']}>
+                {/* 現在の画像 */}
                 <Image
-                  src="/images/hero-photo.png"
+                  src={heroImages[currentImageIndex]}
                   alt="Salon main visual"
                   width={1360}
                   height={1360}
