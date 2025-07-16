@@ -1,0 +1,13 @@
+.section-title {
+  margin-block: 0 var(--spacing-lg);
+  padding-block: var(--spacing-xl) var(--spacing-sm);
+  padding-inline: var(--spacing-sm);
+  font-size: var(--font-3xl);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-gray-60);
+  text-align: center;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  font-family: var(--font-playfair-italic);
+  font-style: italic;
+}

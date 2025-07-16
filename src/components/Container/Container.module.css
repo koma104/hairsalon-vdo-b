@@ -1,0 +1,13 @@
+/* 共通のベーススタイル */
+.container {
+  padding-block: var(--spacing-3xl) var(--spacing-2xl);
+  padding-inline: var(--spacing-lg);
+
+  @media (min-width: 768px) {
+    margin-inline: auto;
+    padding-block: var(--spacing-3xl) var(--spacing-xl);
+    padding-inline: var(--spacing-2xl);
+    max-width: var(--container-max-width);
+    border-inline: 1px solid var(--color-container-inline);
+  }
+}

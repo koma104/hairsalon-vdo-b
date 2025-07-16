@@ -1,0 +1,44 @@
+.pagination {
+  display: grid;
+  grid-auto-flow: column;
+  place-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  font-size: var(--font-sm);
+}
+
+.page-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-gray-60);
+  font-size: var(--font-md);
+  font-weight: normal;
+  padding-block: var(--spacing-xs);
+  padding-inline: var(--spacing-sm);
+  transition: color 0.3s;
+
+  &:focus-visible {
+    color: var(--color-hover);
+  }
+
+  @media (any-hover: hover) {
+    &:hover {
+      color: var(--color-hover);
+    }
+  }
+
+  &:disabled {
+    color: var(--color-gray-25);
+    cursor: not-allowed;
+  }
+}
+
+.arrow-svg {
+  display: inline-block;
+  vertical-align: middle;
+  color: inherit;
+  width: 2em;
+  height: 2em;
+  pointer-events: none;
+}

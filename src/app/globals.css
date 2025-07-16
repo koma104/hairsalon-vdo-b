@@ -1,0 +1,140 @@
+/* kiso.cssのインポート */
+@import './kiso.css';
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-base-bg);
+  color: var(--color-black);
+  line-height: 1.5;
+  font-size: var(--font-md);
+  font-weight: var(--font-weight-regular);
+  letter-spacing: 0.02em;
+
+  @media (min-width: 768px) {
+    line-height: 1.6;
+  }
+}
+
+select {
+  line-height: 1;
+}
+
+/* フォントファミリー */
+:root {
+  --font-sans: var(--font-noto-sans);
+  --font-noto-sans:
+    'Noto Sans JP', 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo,
+    sans-serif;
+  --font-figtree: 'Figtree', 'Helvetica Neue', Arial, sans-serif;
+  --font-playfair: 'Playfair Display', Georgia, serif;
+  --font-playfair-italic: 'Playfair Display', Georgia, serif;
+}
+
+/* カラー */
+:root {
+  --color-accent: #06c755;
+  --color-black: #222; /* テキスト primary */
+  --color-white: #fff;
+  --color-gray-05: #fafafa; /* nav背景 */
+  --color-gray-10: #eee;
+  --color-gray-20: #dbdbdb; /* border */
+  --color-gray-25: #aaa; /* 非活性要素 */
+  --color-gray-30: #888; /* テキスト sub1 */
+  --color-gray-40: #666;
+  --color-gray-50: #444;
+  --color-gray-60: #333; /* タイトルテキスト */
+  --color-sns: #282828;
+  --color-bg: #edeae6;
+
+  --color-accent-blend: #f938aa;
+  --color-gray-60-blend: #ccc;
+  --color-black-blend: #ddd;
+
+  --color-base-bg: var(--color-gray-05);
+  --color-nav-bg: var(--color-gray-10);
+  --color-hover: var(--color-accent);
+  --color-select: var(--color-gray-60);
+  --color-container-inline: var(--color-gray-20);
+}
+
+/* スペーシング */
+:root {
+  --base-unit: 0.5rem;
+
+  --spacing-xxs: calc(var(--base-unit) * 0.5); /* 4px */
+  --spacing-xs: calc(var(--base-unit) * 1); /* 8px */
+  --spacing-sm: calc(var(--base-unit) * 2); /* 16px */
+  --spacing-md: calc(var(--base-unit) * 2.5); /* 20px */
+  --spacing-lg: calc(var(--base-unit) * 3); /* 24px */
+  --spacing-xl: calc(var(--base-unit) * 4); /* 32px */
+  --spacing-2xl: calc(var(--base-unit) * 6); /* 48px */
+  --spacing-3xl: calc(var(--base-unit) * 8); /* 64px */
+  --spacing-4xl: calc(var(--base-unit) * 10); /* 80px */
+
+  /* タブレット */
+  @media (min-width: 768px) {
+    --base-unit: 0.5625rem; /* 9px - 18pxベース */
+  }
+
+  /* デスクトップ */
+  @media (min-width: 1024px) {
+    --base-unit: 0.625rem; /* 10px - 20pxベース */
+  }
+}
+
+/* フォントサイズ */
+:root {
+  --font-xxs: 0.625rem; /* 10px */
+  --font-xs: 0.75rem; /* 12px テキスト小 */
+  --font-sm: 0.875rem; /* 14px テキスト */
+  --font-md: 1rem; /* 16px */
+  --font-lg: 1.125rem; /* 18px サブタイトル小 */
+  --font-xl: 1.25rem; /* 20px サブタイトル */
+  --font-2xl: 1.5rem; /* 24px ニュース記事タイトル */
+  --font-3xl: 1.875rem; /* 30px タイトル大 */
+
+  /* タブレット */
+  @media (min-width: 768px) {
+    font-size: 112.5%; /* 18px */
+  }
+
+  /* デスクトップ */
+  @media (min-width: 1024px) {
+    font-size: 125%; /* 20px */
+  }
+}
+
+/* フォントウェイト */
+:root {
+  --font-weight-regular: 400; /* Noto Sans JP Regular */
+  --font-weight-medium: 500; /* Noto Sans JP Medium */
+  --font-weight-bold: 700; /* Noto Sans JP Bold */
+}
+
+/* コンポーネントサイズ */
+:root {
+  --news-thumbnail-size-sp: 6.25rem; /* 100px */
+  --news-thumbnail-size-pc: 7rem;
+  --carousel-width-sp: 15rem;
+  --carousel-width-pc: 16rem;
+}
+
+/* レイアウトサイズ */
+:root {
+  --layout-max-width: 1280px;
+  --container-max-width: calc(var(--spacing-3xl) * 9);
+}
+
+/* Next.jsのスクロール動作制御 */
+html {
+  scroll-behavior: auto;
+}
+
+body {
+  scroll-behavior: auto;
+}
+
+/* sticky/fixed要素のスクロール動作制御 */
+[data-nextjs-scroll-focus-boundary] {
+  scroll-behavior: auto;
+}

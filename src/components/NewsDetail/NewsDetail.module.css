@@ -1,0 +1,113 @@
+.article {
+  margin-block-end: var(--spacing-2xl);
+}
+
+.header {
+  display: grid;
+  grid-auto-flow: row;
+  gap: var(--spacing-xxs);
+  margin-block-end: var(--spacing-xs);
+  text-align: left;
+}
+
+.section-title {
+  margin-block: 0;
+  padding-block: var(--spacing-xl) 0;
+  font-size: var(--font-2xl);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-gray-60);
+  text-align: left;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+.date {
+  font-size: var(--font-xxs);
+  color: var(--color-gray-30);
+}
+
+.main-image-wrapper {
+  margin-block-end: var(--spacing-xl);
+
+  /* PCではアスペクト比を調整 */
+  @media (min-width: 768px) {
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+  }
+}
+
+.main-image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+
+  /* PCではアスペクト比を固定して長方形にする */
+  @media (min-width: 768px) {
+    aspect-ratio: 16 / 9;
+    height: auto;
+    object-fit: cover;
+  }
+}
+
+.content {
+  font-size: var(--font-xs);
+  line-height: 2;
+
+  & p:not(:last-child) {
+    margin-block-end: var(--spacing-lg);
+  }
+
+  & ul {
+    list-style-position: outside;
+    padding-inline-start: var(--spacing-md);
+    margin-block-end: var(--spacing-xl);
+  }
+
+  & li {
+    margin-block-end: var(--spacing-sm);
+    list-style-type: disc;
+    line-height: 1.6;
+  }
+}
+
+.wrapper {
+  margin-block-end: var(--spacing-2xl);
+}
+
+.subtitle {
+  font-size: var(--font-lg);
+  font-weight: var(--font-weight-regular);
+  margin-block-end: var(--spacing-md);
+  border-block-end: 1px solid var(--color-gray-20);
+  padding-block-end: var(--spacing-xs);
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-2xl);
+  padding-inline: var(--spacing-sm);
+}
+
+.prev,
+.next {
+  font-size: var(--font-sm);
+  text-decoration: none;
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  color: inherit;
+  transition: color 0.2s ease;
+
+  @media (any-hover: hover) {
+    &:hover {
+      color: var(--color-hover);
+    }
+  }
+}
+
+.disabled {
+  color: var(--color-gray-25);
+  pointer-events: none;
+}

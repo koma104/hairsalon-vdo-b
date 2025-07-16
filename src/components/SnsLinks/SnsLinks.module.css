@@ -1,0 +1,36 @@
+.sns-links {
+  display: grid;
+  place-items: center;
+  grid-auto-flow: column;
+  justify-content: center;
+  gap: var(--spacing-xl);
+
+  @media (min-width: 768px) {
+    justify-content: end;
+    gap: var(--spacing-lg);
+  }
+
+  & a {
+    color: var(--color-sns);
+    transition: color 0.2s ease;
+
+    &:focus-visible {
+      color: var(--color-hover);
+    }
+
+    @media (any-hover: hover) {
+      &:hover {
+        color: var(--color-hover);
+      }
+    }
+  }
+
+  & svg {
+    vertical-align: middle;
+  }
+}
+
+.youtube-fix {
+  display: inline-block;
+  transform: translateY(1px);
+}
