@@ -142,6 +142,50 @@ function HomeContent() {
     })
   }
 
+  // 最初の画像のアニメーション開始
+  const startFirstImageAnimation = () => {
+    const mainImageElement = document.querySelector(`.${styles['main-image']}`)
+    if (!mainImageElement) return
+
+    // 最初の画像のアニメーション
+    gsap.set(mainImageElement, {
+      scale: 1.1
+    })
+    
+    // opacityとスケールを別々にアニメーション
+    gsap.fromTo(mainImageElement, 
+      { opacity: 0 },
+      { 
+        opacity: 1,
+        duration: 1.5, 
+        delay: 0, 
+        ease: 'power2.out' 
+      }
+    )
+    
+    gsap.fromTo(mainImageElement, 
+      { scale: 1.1 },
+      { 
+        scale: 1,
+        duration: 9, 
+        delay: 0, 
+        ease: 'power2.out' 
+      }
+    )
+    
+    // 7秒後にopacityを0にフェードアウト
+    gsap.to(mainImageElement, {
+      opacity: 0,
+      duration: 0.5,
+      delay: 7,
+      ease: 'power2.inOut',
+      onComplete: () => {
+        // フェードアウト完了後に次の画像に切り替え
+        setTimeout(switchToNextImage, 100)
+      }
+    })
+  }
+
   // デバッグ用：画像インデックスの変更を監視
   useEffect(() => {
     console.log('Image changed to:', heroImages[currentImageIndex])
@@ -211,41 +255,8 @@ function HomeContent() {
         },
       })
       
-      // 初期アニメーション
-      if (mainImageElement) {
-        // opacityとスケールを別々にアニメーション
-        gsap.fromTo(mainImageElement, 
-          { opacity: 0 },
-          { 
-            opacity: 1,
-            duration: 1.5, 
-            delay: 0.3, 
-            ease: 'power2.out' 
-          }
-        )
-        
-        gsap.fromTo(mainImageElement, 
-          { scale: 1.1 },
-          { 
-            scale: 1,
-            duration: 9, 
-            delay: 0.3, 
-            ease: 'power2.out' 
-          }
-        )
-        
-        // 7秒後にopacityを0にフェードアウト
-        gsap.to(mainImageElement, {
-          opacity: 0,
-          duration: 0.5,
-          delay: 7.3,
-          ease: 'power2.inOut',
-          onComplete: () => {
-            // フェードアウト完了後に次の画像に切り替え
-            setTimeout(switchToNextImage, 100)
-          }
-        })
-      }
+             // 最初の画像のアニメーション開始
+       startFirstImageAnimation()
     }
 
     if (contentWrapperElement) {
@@ -491,10 +502,6 @@ function HomeContent() {
                   quality={90}
                 />
               </div>
-            </div>
-            <div className={styles['main-visual-text']} ref={mainVisualTextRef}>
-              <span className={styles['standard']}>A New You,</span>
-              <span className={styles['italic']}>Every Day</span>
             </div>
             <div className={styles['border-line']}></div>
           </div>
