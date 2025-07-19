@@ -26,6 +26,14 @@ const heroImages = [
   '/images/hero-photo-04.png',
 ]
 
+// タイプライターアニメーション用のテキスト
+const typewriterText = [
+  'In the heart of the city, where style',
+  'meets sophistication, we create more',
+  'than just haircuts - we craft experiences',
+  'that reveal your true character.',
+]
+
 const menuCategories = [
   {
     category: 'cuts',
@@ -79,20 +87,15 @@ function HomeContent() {
   const menuTitleRef = useRef<HTMLHeadingElement>(null)
   const menuWrapperRef = useRef<HTMLDivElement>(null)
 
+  // タイプライターアニメーション用のref
+  const typewriterContainerRef = useRef<HTMLDivElement>(null)
+
   // 現在の画像インデックスを管理するref
   const currentImageIndexRef = useRef(0)
 
   // 画像切り替えアニメーション
   const switchToNextImage = (heroParallaxAnimationRef: gsap.core.Tween | null) => {
     const nextIndex = (currentImageIndexRef.current + 1) % heroImages.length
-
-    // デバッグ用：現在の画像インデックスを出力
-    console.log(
-      'Current Index:',
-      currentImageIndexRef.current,
-      'Next Image:',
-      heroImages[nextIndex]
-    )
 
     // 現在の画像と次の画像の要素を取得
     const currentImageElement = document.querySelector(
@@ -127,9 +130,90 @@ function HomeContent() {
   }
 
   // 画像インデックスの変更を監視
+  useEffect(() => {}, [currentImageIndex])
+
+  // タイプライターアニメーション用の文字分割とアニメーション
   useEffect(() => {
-    console.log('Image changed to:', heroImages[currentImageIndex])
-  }, [currentImageIndex])
+    if (!typewriterContainerRef.current) return
+
+    // テキスト要素を取得
+    const textElements = typewriterContainerRef.current.querySelectorAll(
+      `.${styles['typewriter-text']}`
+    )
+
+    // 文字分割処理（元サイトと同じ方法）
+    textElements.forEach((textElement) => {
+      const content = textElement.textContent || ''
+      const newText = content
+        .split('')
+        .map((char) =>
+          char === ' ' ? '<span> </span>' : `<span class="${styles['char']}">${char}</span>`
+        )
+        .join('')
+      textElement.innerHTML = newText
+    })
+
+    // 元サイトと同じアニメーション
+    const speed = 0.05 // より早い間隔で1文字ずつ表示
+
+    const animateLine = (lineIndex: number, charIndex: number = 0) => {
+      if (lineIndex >= textElements.length) return
+
+      const textElement = textElements[lineIndex]
+      const chars = textElement.querySelectorAll(`.${styles['char']}`)
+
+      if (charIndex >= chars.length) {
+        // この行が終わったら、次の行へ（溜めは前の文字で既に追加済み）
+        animateLine(lineIndex + 1, 0)
+        return
+      }
+
+      const char = chars[charIndex] as HTMLElement
+
+      // 文字の表示時間に微細なランダム性を追加
+      const randomDuration = 0.08 + Math.random() * 0.04 // 0.08〜0.12秒のランダム
+
+      gsap
+        .fromTo(
+          char,
+          {
+            opacity: 0,
+            y: 0,
+            backgroundColor: 'black',
+            color: 'white',
+          },
+          {
+            opacity: 1,
+            y: 0,
+            backgroundColor: 'black',
+            color: 'white',
+            duration: randomDuration,
+            ease: 'none',
+          }
+        )
+        .then(() => {
+          // 文字が完全に表示されてから背景を透明に
+          gsap.to(char, {
+            backgroundColor: 'transparent',
+            duration: 0.15,
+            delay: 0.05,
+            ease: 'none',
+          })
+        })
+
+      // 次の文字へ（行の最後の文字の場合は行間の溜めを追加）
+      const randomSpeed = speed + (Math.random() - 0.5) * 0.02 // ±0.01秒のランダム
+      const nextDelay = charIndex === chars.length - 1 ? speed * 1000 + 800 : randomSpeed * 1000
+      setTimeout(() => {
+        animateLine(lineIndex, charIndex + 1)
+      }, nextDelay)
+    }
+
+    // アニメーション開始
+    setTimeout(() => {
+      animateLine(0, 0) // 最初の行から開始
+    }, 1000) // ページ読み込み後1秒で開始
+  }, []) // 初回のみ実行されるように変更
 
   // URLパラメータを監視してニュース詳細を表示（newsクエリパラメータのみ）
   useEffect(() => {
@@ -222,6 +306,23 @@ function HomeContent() {
             heroParallaxAnimation = newParallaxAnimation
           }
         }, 6000)
+      }
+
+      // パララックス効果：タイプライターテキストのアニメーション
+      const typewriterContainer = document.querySelector(
+        `.${styles['typewriter-text-container']}`
+      ) as HTMLElement
+      if (typewriterContainer) {
+        gsap.to(typewriterContainer, {
+          yPercent: isMobile ? -15 : -25, // さらに大きな移動距離
+          ease: 'none',
+          scrollTrigger: {
+            trigger: mainVisualElement,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: isMobile ? 0.5 : 1,
+          },
+        })
       }
 
       if (contentWrapperElement) {
@@ -507,6 +608,13 @@ function HomeContent() {
                   sizes="100vw"
                   quality={90}
                 />
+              ))}
+            </div>
+            <div ref={typewriterContainerRef} className={styles['typewriter-text-container']}>
+              {typewriterText.map((text, index) => (
+                <p key={index} className={styles['typewriter-text']}>
+                  {text}
+                </p>
               ))}
             </div>
           </div>
