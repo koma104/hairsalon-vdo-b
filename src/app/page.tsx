@@ -23,7 +23,7 @@ const heroImages = [
   '/images/hero-photo-01.png',
   '/images/hero-photo-02.png',
   '/images/hero-photo-03.png',
-  '/images/hero-photo-04.png'
+  '/images/hero-photo-04.png',
 ]
 
 const menuCategories = [
@@ -61,132 +61,72 @@ function HomeContent() {
   const { currentPage, setCurrentPage } = usePageContext()
   const router = useRouter()
   const searchParams = useSearchParams()
-  
+
   // アニメーション用のref
   const conceptSectionRef = useRef<HTMLElement>(null)
   const conceptTitleRef = useRef<HTMLHeadingElement>(null)
   const conceptCatchphraseRef = useRef<HTMLHeadingElement>(null)
   const conceptTextRef = useRef<HTMLParagraphElement>(null)
-  
+
   // ニュースセクション用のref
   const newsSectionRef = useRef<HTMLElement>(null)
   const newsTitleRef = useRef<HTMLHeadingElement>(null)
   const newsListRef = useRef<HTMLDivElement>(null)
   const newsMoreButtonRef = useRef<HTMLDivElement>(null)
-  
+
   // メニューセクション用のref
   const menuSectionRef = useRef<HTMLElement>(null)
   const menuTitleRef = useRef<HTMLHeadingElement>(null)
   const menuWrapperRef = useRef<HTMLDivElement>(null)
 
-  // ヒーローテキスト用のref
-  const mainVisualTextRef = useRef<HTMLDivElement>(null);
-  
   // 現在の画像インデックスを管理するref
-  const currentImageIndexRef = useRef(0);
+  const currentImageIndexRef = useRef(0)
 
   // 画像切り替えアニメーション
-  const switchToNextImage = () => {
-    const mainImageElement = document.querySelector(`.${styles['main-image']}`)
-    if (!mainImageElement) return
-
+  const switchToNextImage = (heroParallaxAnimationRef: gsap.core.Tween | null) => {
     const nextIndex = (currentImageIndexRef.current + 1) % heroImages.length
-    
+
     // デバッグ用：現在の画像インデックスを出力
-    console.log('Current Index:', currentImageIndexRef.current, 'Next Image:', heroImages[nextIndex])
-    
-    // 画像のsrcを直接更新
-    const imgElement = mainImageElement as HTMLImageElement
-    imgElement.src = heroImages[nextIndex]
-    
-    // 次の画像を設定
-    currentImageIndexRef.current = nextIndex
-    setCurrentImageIndex(nextIndex)
-    
-    // 新しい画像のアニメーション
-    gsap.set(mainImageElement, {
-      scale: 1.1
-    })
-    
-    // opacityとスケールを別々にアニメーション
-    gsap.fromTo(mainImageElement, 
-      { opacity: 0 },
-      { 
-        opacity: 1,
-        duration: 1.5, 
-        delay: 0, 
-        ease: 'power2.out' 
-      }
+    console.log(
+      'Current Index:',
+      currentImageIndexRef.current,
+      'Next Image:',
+      heroImages[nextIndex]
     )
-    
-    gsap.fromTo(mainImageElement, 
-      { scale: 1.1 },
-      { 
+
+    // 現在の画像と次の画像の要素を取得
+    const currentImageElement = document.querySelector(
+      `.${styles['main-image']}.${styles['current']}`
+    ) as HTMLElement
+    const nextImageElement = document.querySelector(
+      `.${styles['main-image']}:nth-child(${nextIndex + 1})`
+    ) as HTMLElement
+
+    if (currentImageElement && nextImageElement) {
+      // 現在の画像はスケール変化なし（フェードアウトのみ）
+      // 次の画像を1.1から1にスケールダウン（フェードイン）
+      gsap.set(nextImageElement, { scale: 1.1 })
+      gsap.to(nextImageElement, {
         scale: 1,
-        duration: 9, 
-        delay: 0, 
-        ease: 'power2.out' 
-      }
-    )
-    
-    // 7秒後にopacityを0にフェードアウト
-    gsap.to(mainImageElement, {
-      opacity: 0,
-      duration: 0.5,
-      delay: 7,
-      ease: 'power2.inOut',
-      onComplete: () => {
-        // フェードアウト完了後に次の画像に切り替え
-        setTimeout(switchToNextImage, 100)
-      }
-    })
+        duration: 6,
+        ease: 'none',
+      })
+
+      // 次の画像を設定（state更新でCSSクラス切り替え）
+      currentImageIndexRef.current = nextIndex
+      setCurrentImageIndex(nextIndex)
+
+      // パララックス効果は親要素に適用済みなので、画像切り替え時は何もしない
+      // （親要素のパララックスは継続される）
+    }
+
+    // 6秒後に次の画像に切り替え（常に実行）
+    setTimeout(() => switchToNextImage(heroParallaxAnimationRef), 6000)
+
+    return heroParallaxAnimationRef
   }
 
-  // 最初の画像のアニメーション開始
-  const startFirstImageAnimation = () => {
-    const mainImageElement = document.querySelector(`.${styles['main-image']}`)
-    if (!mainImageElement) return
-
-    // 最初の画像のアニメーション
-    gsap.set(mainImageElement, {
-      scale: 1.1
-    })
-    
-    // opacityとスケールを別々にアニメーション
-    gsap.fromTo(mainImageElement, 
-      { opacity: 0 },
-      { 
-        opacity: 1,
-        duration: 1.5, 
-        delay: 0, 
-        ease: 'power2.out' 
-      }
-    )
-    
-    gsap.fromTo(mainImageElement, 
-      { scale: 1.1 },
-      { 
-        scale: 1,
-        duration: 9, 
-        delay: 0, 
-        ease: 'power2.out' 
-      }
-    )
-    
-    // 7秒後にopacityを0にフェードアウト
-    gsap.to(mainImageElement, {
-      opacity: 0,
-      duration: 0.5,
-      delay: 7,
-      ease: 'power2.inOut',
-      onComplete: () => {
-        // フェードアウト完了後に次の画像に切り替え
-        setTimeout(switchToNextImage, 100)
-      }
-    })
-  }
-
-  // デバッグ用：画像インデックスの変更を監視
+  // 画像インデックスの変更を監視
   useEffect(() => {
     console.log('Image changed to:', heroImages[currentImageIndex])
   }, [currentImageIndex])
@@ -194,7 +134,7 @@ function HomeContent() {
   // URLパラメータを監視してニュース詳細を表示（newsクエリパラメータのみ）
   useEffect(() => {
     const newsQueryParam = searchParams.get('news')
-    
+
     if (newsQueryParam) {
       setCurrentArticleId(newsQueryParam)
       setCurrentPage('news')
@@ -209,7 +149,10 @@ function HomeContent() {
     // DOMが完全にマウントされるまで少し待つ
     const timer = setTimeout(() => {
       // デバイス判定
-      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768
+      const isMobile =
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+          navigator.userAgent
+        ) || window.innerWidth < 768
 
       // Lenisインスタンスを作成（慣性スクロール）
       const lenis = new Lenis({
@@ -228,256 +171,315 @@ function HomeContent() {
 
       // ScrollTriggerにLenisのスクロールを連携
       lenis.on('scroll', ScrollTrigger.update)
-      
+
       // ScrollTriggerインスタンスを個別管理
       const scrollTriggers: ScrollTrigger[] = []
 
       // パララックス効果：ヒーロー画像のアニメーション
       let heroParallaxAnimation: gsap.core.Tween | null = null
-      
+
       // 要素が存在することを確認してからアニメーションを実行
-      const mainImageElement = document.querySelector(`.${styles['main-image']}`)
       const mainVisualElement = document.querySelector(`.${styles['main-visual']}`)
       const contentWrapperElement = document.querySelector(`.${styles['content-wrapper']}`)
 
       let contentAnimation: gsap.core.Tween | null = null
 
-    if (mainImageElement && mainVisualElement) {
-      // パララックス効果：ヒーロー画像のアニメーション（PC・スマホ両方で適用）
-      heroParallaxAnimation = gsap.to(mainImageElement, {
-        yPercent: isMobile ? -5 : -10, // スマホでは軽微な効果
-        ease: 'none',
-        scrollTrigger: {
-          trigger: mainVisualElement,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: isMobile ? 0.5 : 1, // スマホではより滑らかなスクラブ
-        },
-      })
-      
-             // 最初の画像のアニメーション開始
-       startFirstImageAnimation()
-    }
+      if (mainVisualElement) {
+        // パララックス効果：親要素（main-image-wrapper）に適用
+        const mainImageWrapper = document.querySelector(
+          `.${styles['main-image-wrapper']}`
+        ) as HTMLElement
 
-    if (contentWrapperElement) {
-      gsap.set(contentWrapperElement, {
-        y: '0vh',
-      })
+        if (mainImageWrapper) {
+          heroParallaxAnimation = gsap.to(mainImageWrapper, {
+            yPercent: isMobile ? -5 : -10, // スマホでは軽微な効果
+            ease: 'none',
+            scrollTrigger: {
+              trigger: mainVisualElement,
+              start: 'top top',
+              end: 'bottom top',
+              scrub: isMobile ? 0.5 : 1, // スマホではより滑らかなスクラブ
+            },
+          })
+        }
 
-      contentAnimation = gsap.to(contentWrapperElement, {
-        scrollTrigger: {
-          trigger: contentWrapperElement,
-          start: 'top bottom-=100',
-          end: 'bottom top+=100',
-          scrub: 1,
-        },
-        y: 0,
-      })
-    }
+        // 1枚目の初期スケールアニメーション開始
+        const firstImageElement = document.querySelector(
+          `.${styles['main-image']}.${styles['current']}`
+        ) as HTMLElement
+        if (firstImageElement) {
+          gsap.to(firstImageElement, {
+            scale: 1,
+            duration: 6,
+            ease: 'none',
+          })
+        }
 
-          // コンセプトセクションのアニメーション
+        // 6秒後に画像切り替えアニメーション開始
+        setTimeout(() => {
+          const newParallaxAnimation = switchToNextImage(heroParallaxAnimation)
+          if (newParallaxAnimation) {
+            heroParallaxAnimation = newParallaxAnimation
+          }
+        }, 6000)
+      }
+
+      if (contentWrapperElement) {
+        gsap.set(contentWrapperElement, {
+          y: '0vh',
+        })
+
+        contentAnimation = gsap.to(contentWrapperElement, {
+          scrollTrigger: {
+            trigger: contentWrapperElement,
+            start: 'top bottom-=100',
+            end: 'bottom top+=100',
+            scrub: 1,
+          },
+          y: 0,
+        })
+      }
+
+      // コンセプトセクションのアニメーション
       if (conceptSectionRef.current && conceptTitleRef.current && conceptCatchphraseRef.current) {
         // 初期状態を設定（p要素は除外）
         gsap.set([conceptTitleRef.current, conceptCatchphraseRef.current], {
           opacity: 0,
-          y: 15
+          y: 15,
         })
 
-      // 下からふわっと表示アニメーション
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: conceptSectionRef.current,
-          start: 'top bottom-=200',
-          end: 'bottom top+=100',
-          toggleActions: 'play none none reverse'
+        // 下からふわっと表示アニメーション
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: conceptSectionRef.current,
+            start: 'top bottom-=200',
+            end: 'bottom top+=100',
+            toggleActions: 'play none none reverse',
+          },
+        })
+
+        // h2タイトル（opacity + 下から移動）
+        if (conceptTitleRef.current) {
+          tl.to(
+            conceptTitleRef.current,
+            {
+              opacity: 1,
+              y: 0,
+              duration: 1.0,
+              ease: 'power2.out',
+            },
+            0.05
+          ) // ディレイを短縮
         }
-      })
 
-      // h2タイトル（opacity + 下から移動）
-      if (conceptTitleRef.current) {
-        tl.to(conceptTitleRef.current, {
-          opacity: 1,
-          y: 0,
-          duration: 1.0,
-          ease: 'power2.out'
-        }, 0.05) // ディレイを短縮
-      }
+        // h3キャッチフレーズ（opacity + 下から移動）
+        if (conceptCatchphraseRef.current) {
+          tl.to(
+            conceptCatchphraseRef.current,
+            {
+              opacity: 1,
+              y: 0,
+              duration: 1.1,
+              ease: 'power2.out',
+            },
+            '-=0.8'
+          ) // 重複時間を調整
+        }
 
-      // h3キャッチフレーズ（opacity + 下から移動）
-      if (conceptCatchphraseRef.current) {
-        tl.to(conceptCatchphraseRef.current, {
-          opacity: 1,
-          y: 0,
-          duration: 1.1,
-          ease: 'power2.out'
-        }, '-=0.8') // 重複時間を調整
-      }
+        // コンセプトテキスト（行ごとに表示）
+        if (conceptTextRef.current) {
+          // span要素を取得
+          const spans = conceptTextRef.current.querySelectorAll('span')
 
-      // コンセプトテキスト（行ごとに表示）
-      if (conceptTextRef.current) {
-        // span要素を取得
-        const spans = conceptTextRef.current.querySelectorAll('span')
-        
-        // 初期状態を設定
-        spans.forEach(span => {
-          gsap.set(span, {
-            opacity: 0
+          // 初期状態を設定
+          spans.forEach((span) => {
+            gsap.set(span, {
+              opacity: 0,
+            })
           })
-        })
-        
-        // 各行を順番にアニメーション
-        spans.forEach((span, index) => {
-          tl.to(span, {
-            opacity: 1,
-            duration: 0.6,
-            ease: 'power2.out'
-          }, `-=${index === 0 ? 0.6 : 0.4}`) // 重複時間を短縮
-        })
-      }
-    }
 
-    // ニュースセクションのアニメーション
-    if (newsSectionRef.current && newsTitleRef.current && newsListRef.current && newsMoreButtonRef.current) {
-      // 初期状態を設定
-      gsap.set([newsTitleRef.current, newsListRef.current, newsMoreButtonRef.current], {
-        opacity: 0
-      })
-      gsap.set(newsTitleRef.current, {
-        y: 15
-      })
-
-      // ニュースタイトルのアニメーション
-      const newsTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: newsSectionRef.current,
-          start: 'top bottom-=200',
-          end: 'bottom top+=100',
-          toggleActions: 'play none none reverse'
+          // 各行を順番にアニメーション
+          spans.forEach((span, index) => {
+            tl.to(
+              span,
+              {
+                opacity: 1,
+                duration: 0.6,
+                ease: 'power2.out',
+              },
+              `-=${index === 0 ? 0.6 : 0.4}`
+            ) // 重複時間を短縮
+          })
         }
-      })
-
-      // h2タイトル（opacity + 下から移動）
-      if (newsTitleRef.current) {
-        newsTl.to(newsTitleRef.current, {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          ease: 'power2.out'
-        }, 0.05) // ディレイを短縮
       }
 
-      // ニュースリスト（opacityのみ）
-      if (newsListRef.current) {
-        newsTl.to(newsListRef.current, {
-          opacity: 1,
-          duration: 0.8,
-          ease: 'power2.out'
-        }, '-=0.4') // 重複時間を短縮
-      }
+      // ニュースセクションのアニメーション
+      if (
+        newsSectionRef.current &&
+        newsTitleRef.current &&
+        newsListRef.current &&
+        newsMoreButtonRef.current
+      ) {
+        // 初期状態を設定
+        gsap.set([newsTitleRef.current, newsListRef.current, newsMoreButtonRef.current], {
+          opacity: 0,
+        })
+        gsap.set(newsTitleRef.current, {
+          y: 15,
+        })
 
-      // moreボタン（opacityのみ）
-      if (newsMoreButtonRef.current) {
-        newsTl.to(newsMoreButtonRef.current, {
-          opacity: 1,
-          duration: 0.8,
-          ease: 'power2.out'
-        }, '-=0.3') // 重複時間を短縮
-      }
-    }
+        // ニュースタイトルのアニメーション
+        const newsTl = gsap.timeline({
+          scrollTrigger: {
+            trigger: newsSectionRef.current,
+            start: 'top bottom-=200',
+            end: 'bottom top+=100',
+            toggleActions: 'play none none reverse',
+          },
+        })
 
-    // メニューセクションのアニメーション
-    if (menuSectionRef.current && menuTitleRef.current && menuWrapperRef.current) {
-      // 初期状態を設定
-      gsap.set([menuTitleRef.current, menuWrapperRef.current], {
-        opacity: 0
-      })
-      gsap.set(menuTitleRef.current, {
-        y: 15
-      })
-
-      // メニュータイトルのアニメーション
-      const menuTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: menuSectionRef.current,
-          start: 'top bottom-=200',
-          end: 'bottom top+=100',
-          toggleActions: 'play none none reverse'
+        // h2タイトル（opacity + 下から移動）
+        if (newsTitleRef.current) {
+          newsTl.to(
+            newsTitleRef.current,
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.8,
+              ease: 'power2.out',
+            },
+            0.05
+          ) // ディレイを短縮
         }
-      })
 
-      // h2タイトル（opacity + 下から移動）
-      if (menuTitleRef.current) {
-        menuTl.to(menuTitleRef.current, {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          ease: 'power2.out'
-        }, 0.05) // ディレイを短縮
+        // ニュースリスト（opacityのみ）
+        if (newsListRef.current) {
+          newsTl.to(
+            newsListRef.current,
+            {
+              opacity: 1,
+              duration: 0.8,
+              ease: 'power2.out',
+            },
+            '-=0.4'
+          ) // 重複時間を短縮
+        }
+
+        // moreボタン（opacityのみ）
+        if (newsMoreButtonRef.current) {
+          newsTl.to(
+            newsMoreButtonRef.current,
+            {
+              opacity: 1,
+              duration: 0.8,
+              ease: 'power2.out',
+            },
+            '-=0.3'
+          ) // 重複時間を短縮
+        }
       }
 
-      // メニューラッパー（opacityのみ）
-      if (menuWrapperRef.current) {
-        menuTl.to(menuWrapperRef.current, {
-          opacity: 1,
-          duration: 0.8,
-          ease: 'power2.out'
-        }, '-=0.4') // 重複時間を短縮
+      // メニューセクションのアニメーション
+      if (menuSectionRef.current && menuTitleRef.current && menuWrapperRef.current) {
+        // 初期状態を設定
+        gsap.set([menuTitleRef.current, menuWrapperRef.current], {
+          opacity: 0,
+        })
+        gsap.set(menuTitleRef.current, {
+          y: 15,
+        })
+
+        // メニュータイトルのアニメーション
+        const menuTl = gsap.timeline({
+          scrollTrigger: {
+            trigger: menuSectionRef.current,
+            start: 'top bottom-=200',
+            end: 'bottom top+=100',
+            toggleActions: 'play none none reverse',
+          },
+        })
+
+        // h2タイトル（opacity + 下から移動）
+        if (menuTitleRef.current) {
+          menuTl.to(
+            menuTitleRef.current,
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.8,
+              ease: 'power2.out',
+            },
+            0.05
+          ) // ディレイを短縮
+        }
+
+        // メニューラッパー（opacityのみ）
+        if (menuWrapperRef.current) {
+          menuTl.to(
+            menuWrapperRef.current,
+            {
+              opacity: 1,
+              duration: 0.8,
+              ease: 'power2.out',
+            },
+            '-=0.4'
+          ) // 重複時間を短縮
+        }
       }
-    }
 
-    if (heroParallaxAnimation?.scrollTrigger) {
-      scrollTriggers.push(heroParallaxAnimation.scrollTrigger)
-    }
-    if (contentAnimation?.scrollTrigger) {
-      scrollTriggers.push(contentAnimation.scrollTrigger)
-    }
-
-    // ページ遷移やリロード時にもkillAll
-    const handleUnload = () => {
-      ScrollTrigger.killAll()
-    }
-    window.addEventListener('beforeunload', handleUnload)
-    window.addEventListener('popstate', handleUnload)
-
-    // クリーンアップ
-    return () => {
-      // Lenisインスタンスを破棄
-      if (lenis) {
-        lenis.destroy()
+      if (heroParallaxAnimation?.scrollTrigger) {
+        scrollTriggers.push(heroParallaxAnimation.scrollTrigger)
       }
-      
-      // まず全てのScrollTriggerをkill
-      ScrollTrigger.killAll()
-      window.removeEventListener('beforeunload', handleUnload)
-      window.removeEventListener('popstate', handleUnload)
-      // 個別に管理したScrollTriggerを安全にクリーンアップ
-      scrollTriggers.forEach((trigger) => {
-        if (trigger && trigger.kill) {
-          try {
-            if (!trigger.pin || trigger.pin.parentNode) {
-              trigger.kill()
+      if (contentAnimation?.scrollTrigger) {
+        scrollTriggers.push(contentAnimation.scrollTrigger)
+      }
+
+      // ページ遷移やリロード時にもkillAll
+      const handleUnload = () => {
+        ScrollTrigger.killAll()
+      }
+      window.addEventListener('beforeunload', handleUnload)
+      window.addEventListener('popstate', handleUnload)
+
+      // クリーンアップ
+      return () => {
+        // Lenisインスタンスを破棄
+        if (lenis) {
+          lenis.destroy()
+        }
+
+        // まず全てのScrollTriggerをkill
+        ScrollTrigger.killAll()
+        window.removeEventListener('beforeunload', handleUnload)
+        window.removeEventListener('popstate', handleUnload)
+        // 個別に管理したScrollTriggerを安全にクリーンアップ
+        scrollTriggers.forEach((trigger) => {
+          if (trigger && trigger.kill) {
+            try {
+              if (!trigger.pin || trigger.pin.parentNode) {
+                trigger.kill()
+              }
+            } catch (error) {
+              console.warn('ScrollTrigger cleanup error:', error)
             }
+          }
+        })
+        if (heroParallaxAnimation) {
+          try {
+            heroParallaxAnimation.kill()
           } catch (error) {
-            console.warn('ScrollTrigger cleanup error:', error)
+            console.warn('Hero parallax animation cleanup error:', error)
           }
         }
-      })
-      if (heroParallaxAnimation) {
-        try {
-          heroParallaxAnimation.kill()
-        } catch (error) {
-          console.warn('Hero parallax animation cleanup error:', error)
+        if (contentAnimation) {
+          try {
+            contentAnimation.kill()
+          } catch (error) {
+            console.warn('Content animation cleanup error:', error)
+          }
         }
       }
-      if (contentAnimation) {
-        try {
-          contentAnimation.kill()
-        } catch (error) {
-          console.warn('Content animation cleanup error:', error)
-        }
-      }
-    }
-      }, 100) // 100ms待ってからGSAPを初期化
+    }, 100) // 100ms待ってからGSAPを初期化
 
     return () => {
       clearTimeout(timer)
@@ -487,24 +489,29 @@ function HomeContent() {
   return (
     <>
       {currentPage === 'home' && (
-        <div className={styles['main-visual']}> 
-            <div className={styles['main-visual-inner']}>
-              <div className={styles['main-image-wrapper']}>
-                {/* 現在の画像 */}
+        <div className={styles['main-visual']}>
+          <div className={styles['main-visual-inner']}>
+            <div className={styles['main-image-wrapper']}>
+              {/* 4つの画像を重ねて配置 */}
+              {heroImages.map((image, index) => (
                 <Image
-                  src={heroImages[currentImageIndex]}
+                  key={index}
+                  src={image}
                   alt="Salon main visual"
                   width={1360}
                   height={1360}
-                  priority={true}
-                  className={styles['main-image']}
+                  priority={index === 0}
+                  className={`${styles['main-image']} ${
+                    index === currentImageIndex ? styles['current'] : styles['hidden']
+                  }`}
                   sizes="100vw"
                   quality={90}
                 />
-              </div>
+              ))}
             </div>
-            <div className={styles['border-line']}></div>
           </div>
+          <div className={styles['border-line']}></div>
+        </div>
       )}
 
       <div className={styles['content-wrapper']}>
@@ -512,16 +519,22 @@ function HomeContent() {
           <>
             <section ref={conceptSectionRef} className={styles['content-section']}>
               <Container>
-                <SectionTitle ref={conceptTitleRef} tag="h2">concept</SectionTitle>
+                <SectionTitle ref={conceptTitleRef} tag="h2">
+                  concept
+                </SectionTitle>
                 <h3 ref={conceptCatchphraseRef} className={styles['concept-catchphrase']}>
                   髪の美しさが、あなたの毎日を
                   <br />
                   もっと特別に。
                 </h3>
                 <p ref={conceptTextRef} className={styles['concept-text']}>
-                  <span>一人ひとりの髪質やライフスタイルに寄り添い、ダメージを抑えた施術と心地よい空間で、理想のヘアスタイルをご提案します。</span>
+                  <span>
+                    一人ひとりの髪質やライフスタイルに寄り添い、ダメージを抑えた施術と心地よい空間で、理想のヘアスタイルをご提案します。
+                  </span>
                   <span>髪にやさしいケアと、少しの変化で生まれる新しい自分。</span>
-                  <span>毎日がもっと自信に満ちて、笑顔で過ごせるよう、私たちがサポートいたします。</span>
+                  <span>
+                    毎日がもっと自信に満ちて、笑顔で過ごせるよう、私たちがサポートいたします。
+                  </span>
                 </p>
               </Container>
               <div className={styles['carousel-container']}>
@@ -590,7 +603,9 @@ function HomeContent() {
 
             <section ref={newsSectionRef} className={styles['content-section']}>
               <Container>
-                <SectionTitle ref={newsTitleRef} tag="h2">news</SectionTitle>
+                <SectionTitle ref={newsTitleRef} tag="h2">
+                  news
+                </SectionTitle>
                 <NewsList
                   ref={newsListRef}
                   items={newsItems}
@@ -613,7 +628,9 @@ function HomeContent() {
 
             <section ref={menuSectionRef} className={styles['content-section']}>
               <Container>
-                <SectionTitle ref={menuTitleRef} tag="h2">menu</SectionTitle>
+                <SectionTitle ref={menuTitleRef} tag="h2">
+                  menu
+                </SectionTitle>
                 <div ref={menuWrapperRef} className={styles['menu-wrapper']}>
                   {menuCategories.map((cat) => (
                     <div key={cat.category} className={styles['menu-category']}>
@@ -639,26 +656,20 @@ function HomeContent() {
           </>
         )}
 
-        {currentPage === 'news' && !currentArticleId && (
-          <NewsListPage />
-        )}
+        {currentPage === 'news' && !currentArticleId && <NewsListPage />}
 
         {currentPage === 'news' && currentArticleId && (
-          <NewsDetail 
-            id={currentArticleId} 
+          <NewsDetail
+            id={currentArticleId}
             onArticleChange={(newId) => {
               setCurrentArticleId(newId)
             }}
           />
         )}
 
-        {currentPage === 'reserve' && (
-          <ReservePage />
-        )}
+        {currentPage === 'reserve' && <ReservePage />}
 
-        {currentPage === 'staff' && (
-          <StaffPage />
-        )}
+        {currentPage === 'staff' && <StaffPage />}
       </div>
     </>
   )
