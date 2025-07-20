@@ -8,7 +8,7 @@ import styles from './page.module.css'
 import { newsItems } from '@/lib/newsData'
 import Button from '@/components/Button/Button'
 import SectionTitle from '@/components/SectionTitle/SectionTitle'
-import { gsap, ScrollTrigger } from '@/lib/gsap'
+import { gsap, ScrollTrigger, SplitText } from '@/lib/gsap'
 import Lenis from 'lenis'
 import NewsListPage from './news/page'
 import NewsDetail from '@/components/NewsDetail/NewsDetail'
@@ -141,26 +141,28 @@ function HomeContent() {
       `.${styles['typewriter-text']}`
     )
 
-    // 文字分割処理（元サイトと同じ方法）
+    // SplitTextで文字分割
+    const splitTexts: SplitText[] = []
     textElements.forEach((textElement) => {
-      const content = textElement.textContent || ''
-      const newText = content
-        .split('')
-        .map((char) =>
-          char === ' ' ? '<span> </span>' : `<span class="${styles['char']}">${char}</span>`
-        )
-        .join('')
-      textElement.innerHTML = newText
+      const splitText = new SplitText(textElement, { type: 'chars' })
+      splitTexts.push(splitText)
+
+      // 初期状態で全ての文字を非表示にする
+      gsap.set(splitText.chars, {
+        opacity: 0,
+        backgroundColor: 'transparent',
+        color: 'white',
+      })
     })
 
     // 元サイトと同じアニメーション
     const speed = 0.05 // より早い間隔で1文字ずつ表示
 
     const animateLine = (lineIndex: number, charIndex: number = 0) => {
-      if (lineIndex >= textElements.length) return
+      if (lineIndex >= splitTexts.length) return
 
-      const textElement = textElements[lineIndex]
-      const chars = textElement.querySelectorAll(`.${styles['char']}`)
+      const splitText = splitTexts[lineIndex]
+      const chars = splitText.chars
 
       if (charIndex >= chars.length) {
         // この行が終わったら、次の行へ（溜めは前の文字で既に追加済み）
