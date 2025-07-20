@@ -8,8 +8,8 @@ import styles from './page.module.css'
 import { newsItems } from '@/lib/newsData'
 import Button from '@/components/Button/Button'
 import SectionTitle from '@/components/SectionTitle/SectionTitle'
+import PhotoParallax from '@/components/PhotoParallax/PhotoParallax'
 import { gsap, ScrollTrigger, SplitText } from '@/lib/gsap'
-import Lenis from 'lenis'
 import NewsListPage from './news/page'
 import NewsDetail from '@/components/NewsDetail/NewsDetail'
 import ReservePage from './reserve/page'
@@ -265,23 +265,36 @@ function HomeContent() {
           navigator.userAgent
         ) || window.innerWidth < 768
 
-      // Lenisインスタンスを作成（慣性スクロール）
-      const lenis = new Lenis({
-        duration: isMobile ? 0.8 : 1.2, // スマホではより短いduration
-        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        smoothWheel: !isMobile, // スマホではsmoothWheelを無効化
-        wheelMultiplier: isMobile ? 0.8 : 1, // スマホではホイール感度を調整
-      })
+      // ScrollSmootherを無効化（ヘッダー問題解決のため）
+      // const skewSetter = gsap.quickTo(`.${styles['photo-item']}`, 'skewY')
+      // const clamp = gsap.utils.clamp(-20, 20)
+      // let stopTimer: number | null = null
 
-      // requestAnimationFrameループでLenisを更新
-      function raf(time: number) {
-        lenis.raf(time)
-        requestAnimationFrame(raf)
-      }
-      requestAnimationFrame(raf)
+      // const smoother = ScrollSmoother.create({
+      //   wrapper: 'body',
+      //   content: 'body',
+      //   smooth: 1.5,
+      //   effects: true,
+      //   normalizeScroll: true,
+      //   smoothTouch: false,
+      //   ignoreMobileResize: true,
+      //   onUpdate: (self) => {
+      //     // タイマーをクリア
+      //     if (stopTimer) {
+      //       clearTimeout(stopTimer)
+      //       stopTimer = null
+      //     }
+      //     skewSetter(clamp(self.getVelocity() / -50))
+      //   },
+      //   onStop: () => {
+      //     // 少し遅延してからリセット（より自然な動作）
+      //     stopTimer = window.setTimeout(() => {
+      //       skewSetter(0)
+      //     }, 100)
+      //   },
+      // })
 
-      // ScrollTriggerにLenisのスクロールを連携
-      lenis.on('scroll', ScrollTrigger.update)
+      // data-speed属性が自動的に適用される
 
       // ScrollTriggerインスタンスを個別管理
       const scrollTriggers: ScrollTrigger[] = []
@@ -351,6 +364,9 @@ function HomeContent() {
           },
         })
       }
+
+      // 写真パララックス効果 - ScrollSmootherのみ使用（ScrollTriggerは削除）
+      // data-speed属性が自動的に適用される
 
       if (contentWrapperElement) {
         gsap.set(contentWrapperElement, {
@@ -571,10 +587,14 @@ function HomeContent() {
 
       // クリーンアップ
       return () => {
-        // Lenisインスタンスを破棄
-        if (lenis) {
-          lenis.destroy()
-        }
+        // ScrollSmootherを無効化したためコメントアウト
+        // if (smoother) {
+        //   smoother.kill()
+        // }
+
+        // if (stopTimer) {
+        //   clearTimeout(stopTimer)
+        // }
 
         // まず全てのScrollTriggerをkill
         ScrollTrigger.killAll()
@@ -652,8 +672,13 @@ function HomeContent() {
                 </p>
               ))}
             </div>
+            {/* Reserve Button */}
+            <div className={styles['main-visual-reserve-button']}>
+              <Link href="/reserve">
+                <Button variant="secondary">reserve</Button>
+              </Link>
+            </div>
           </div>
-          <div className={styles['border-line']}></div>
         </div>
       )}
 
@@ -682,11 +707,45 @@ function HomeContent() {
               </Container>
             </section>
 
-            <section className={styles['content-section']}>
-              <Container>
-                <div></div>
-              </Container>
-            </section>
+            <PhotoParallax
+              photos={[
+                {
+                  src: '/images/prx-image-01.jpg',
+                  alt: 'Photo 1',
+                  speed: '1.2',
+                },
+                {
+                  src: '/images/prx-image-02.jpg',
+                  alt: 'Photo 2',
+                  speed: '0.8',
+                },
+                {
+                  src: '/images/prx-image-03.jpg',
+                  alt: 'Photo 3',
+                  speed: '1.1',
+                },
+                {
+                  src: '/images/prx-image-04.jpg',
+                  alt: 'Photo 4',
+                  speed: '0.9',
+                },
+                {
+                  src: '/images/prx-image-05.jpg',
+                  alt: 'Photo 5',
+                  speed: '0.9',
+                },
+                {
+                  src: '/images/prx-image-11.jpg',
+                  alt: 'Photo 6',
+                  speed: '1.1',
+                },
+                {
+                  src: '/images/prx-image-08.jpg',
+                  alt: 'Photo 7',
+                  speed: '0.9',
+                },
+              ]}
+            />
 
             <section ref={newsSectionRef} className={styles['content-section']}>
               <Container>

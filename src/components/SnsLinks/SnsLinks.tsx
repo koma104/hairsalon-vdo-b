@@ -8,7 +8,11 @@ const snsLinks = [
   {
     href: 'https://youtube.com',
     alt: 'YouTube',
-    icon: <span className={styles['youtube-fix']}><YouTubeIcon size={26} /></span>,
+    icon: (
+      <span className={styles['youtube-fix']}>
+        <YouTubeIcon size={26} />
+      </span>
+    ),
   },
   {
     href: 'https://instagram.com',
@@ -22,11 +26,23 @@ const snsLinks = [
   },
 ]
 
-const SnsLinks = () => {
+interface SnsLinksProps {
+  variant?: 'nav' | 'footer'
+}
+
+const SnsLinks = ({ variant = 'nav' }: SnsLinksProps) => {
   return (
-    <div className={styles['sns-links']}>
+    <div
+      className={`${styles['sns-links']} ${variant === 'footer' ? styles['sns-links-footer'] : ''}`}
+    >
       {snsLinks.map((link) => (
-        <a href={link.href} key={link.href} target="_blank" rel="noopener noreferrer" aria-label={link.alt}>
+        <a
+          href={link.href}
+          key={link.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={link.alt}
+        >
           {link.icon}
         </a>
       ))}
@@ -34,4 +50,4 @@ const SnsLinks = () => {
   )
 }
 
-export default SnsLinks 
+export default SnsLinks

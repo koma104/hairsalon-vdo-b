@@ -1,7 +1,7 @@
 .sns-links {
   display: grid;
   grid-auto-flow: column;
-  justify-content: end;
+  justify-content: center;
   gap: var(--spacing-xl);
 
   @media (min-width: 768px) {
@@ -32,4 +32,23 @@
 .youtube-fix {
   display: inline-block;
   transform: translateY(1px);
+}
+
+/* フッター専用のスタイル */
+.sns-links-footer {
+  justify-content: end;
+
+  & a {
+    color: var(--color-white); /* フッター専用の色 */
+
+    &:focus-visible {
+      color: var(--color-white);
+    }
+
+    @media (any-hover: hover) {
+      &:hover {
+        color: var(--color-hover);
+      }
+    }
+  }
 }

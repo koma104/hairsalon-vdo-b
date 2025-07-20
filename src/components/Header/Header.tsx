@@ -6,7 +6,6 @@ import Image from 'next/image'
 import { usePathname, useSearchParams } from 'next/navigation'
 import Nav from '../Nav/Nav'
 import styles from './Header.module.css'
-import Button from '../Button/Button'
 
 // useSearchParamsを使用するコンポーネント
 function HeaderContent() {
@@ -16,7 +15,7 @@ function HeaderContent() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const isHomePage = pathname === '/'
-  const isReservePage = pathname === '/reserve'
+
   const hasNewsParam = searchParams.get('news') !== null
 
   useEffect(() => {
@@ -38,7 +37,7 @@ function HeaderContent() {
     const checkScrollPosition = () => {
       // コンセプトセクションを直接セレクターで検索
       const conceptSection = document.querySelector('section:first-of-type')
-      
+
       if (conceptSection) {
         const conceptRect = conceptSection.getBoundingClientRect()
         // デバイス別にヘッダーの高さを設定
@@ -55,7 +54,7 @@ function HeaderContent() {
     const handleScroll = () => {
       // コンセプトセクションを直接セレクターで検索
       const conceptSection = document.querySelector('section:first-of-type')
-      
+
       if (conceptSection) {
         const conceptRect = conceptSection.getBoundingClientRect()
         // デバイス別にヘッダーの高さを設定
@@ -90,8 +89,8 @@ function HeaderContent() {
       <header className={styles.header}>
         {isHomePage ? (
           <h1 className={styles['logo-title']}>
-            <Link 
-              href="/" 
+            <Link
+              href="/"
               className={`${styles.logo} ${isScrolled ? styles['logo-scrolled'] : ''}`}
               onClick={(e) => {
                 e.preventDefault()
@@ -102,8 +101,8 @@ function HeaderContent() {
             </Link>
           </h1>
         ) : (
-          <Link 
-            href="/" 
+          <Link
+            href="/"
             className={`${styles.logo} ${styles['logo-scrolled']}`}
             onClick={(e) => {
               e.preventDefault()
@@ -115,13 +114,13 @@ function HeaderContent() {
             <Image src="/images/logo-vdo.svg" alt="美容室 VDO" width={100} height={60} priority />
           </Link>
         )}
-        
+
         {/* PC表示時のナビゲーション */}
         <nav className={styles['header-nav']}>
           <ul className={styles['header-nav-list']}>
             <li>
-              <Link 
-                href="/" 
+              <Link
+                href="/"
                 onClick={(e) => {
                   e.preventDefault()
                   window.location.replace('/')
@@ -142,13 +141,6 @@ function HeaderContent() {
           </ul>
         </nav>
       </header>
-        {!isReservePage && (
-          <div className={styles['header-reserve-button']}>
-            <Link href="/reserve">
-              <Button variant="secondary">reserve</Button>
-            </Link>
-          </div>
-        )}
 
       <button
         onClick={toggleMenu}

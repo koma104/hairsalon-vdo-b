@@ -21,7 +21,7 @@ const Footer = () => {
           </div>
         </div>
         <div className={styles['footer-right']}>
-          <SnsLinks />
+          <SnsLinks variant="footer" />
           <div className={styles.copyright}>
             <p>&copy; {new Date().getFullYear()} VDO. All Rights Reserved.</p>
           </div>

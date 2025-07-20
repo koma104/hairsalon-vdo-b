@@ -50,7 +50,7 @@ select {
   --color-black-blend: #ddd;
 
   --color-footer-bg: #000;
-  --color-sns: var(--color-white);
+  --color-sns: #282828;
   --color-base-bg: var(--color-gray-05);
   --color-nav-bg: var(--color-gray-10);
   --color-hover: var(--color-accent);
