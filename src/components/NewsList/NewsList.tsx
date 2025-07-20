@@ -103,10 +103,9 @@ const NewsList = forwardRef<HTMLDivElement, NewsListProps>(
                     <Image
                       src={item.imageUrl}
                       alt={item.title}
-                      width={112}
-                      height={112}
+                      fill
                       className={styles['news-image']}
-                      style={{ width: 'auto', height: 'auto' }}
+                      style={{ objectFit: 'cover' }}
                     />
                   </div>
                   <div className={styles['news-text']}>
@@ -124,10 +123,9 @@ const NewsList = forwardRef<HTMLDivElement, NewsListProps>(
                     <Image
                       src={item.imageUrl}
                       alt={item.title}
-                      width={112}
-                      height={112}
+                      fill
                       className={styles['news-image']}
-                      style={{ width: 'auto', height: 'auto' }}
+                      style={{ objectFit: 'cover' }}
                     />
                   </div>
                 </>
