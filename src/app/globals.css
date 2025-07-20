@@ -43,13 +43,14 @@ select {
   --color-gray-40: #666;
   --color-gray-50: #444;
   --color-gray-60: #333; /* タイトルテキスト */
-  --color-sns: #282828;
   --color-bg: #edeae6;
 
   --color-accent-blend: #f938aa;
   --color-gray-60-blend: #ccc;
   --color-black-blend: #ddd;
 
+  --color-footer-bg: #000;
+  --color-sns: var(--color-white);
   --color-base-bg: var(--color-gray-05);
   --color-nav-bg: var(--color-gray-10);
   --color-hover: var(--color-accent);
@@ -105,8 +106,6 @@ select {
 :root {
   --news-thumbnail-size-sp: 6.25rem; /* 100px */
   --news-thumbnail-size-pc: 7rem;
-  --carousel-width-sp: 15rem;
-  --carousel-width-pc: 16rem;
 }
 
 /* レイアウトサイズ */

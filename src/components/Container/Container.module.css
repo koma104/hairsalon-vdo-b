@@ -8,6 +8,5 @@
     padding-block: var(--spacing-3xl) var(--spacing-xl);
     padding-inline: var(--spacing-2xl);
     max-width: var(--container-max-width);
-    border-inline: 1px solid var(--color-container-inline);
   }
 }

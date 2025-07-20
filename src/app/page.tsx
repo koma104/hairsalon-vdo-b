@@ -638,14 +638,14 @@ function HomeContent() {
               ))}
             </div>
             <div ref={typewriterContainerRef} className={styles['typewriter-text-container']}>
-              <h1 className={styles['main-title']}>
+              <h2 className={styles['main-title']}>
                 <div className={styles['title-line']}>
                   <span>Where Style</span>
                 </div>
                 <div className={styles['title-line']}>
                   <span>Meets You</span>
                 </div>
-              </h1>
+              </h2>
               {typewriterText.map((text, index) => (
                 <p key={index} className={styles['typewriter-text']}>
                   {text}
@@ -680,68 +680,12 @@ function HomeContent() {
                   </span>
                 </p>
               </Container>
-              <div className={styles['carousel-container']}>
-                <div className={styles['store-carousel']}>
-                  <div className={styles['carousel-group']}>
-                    <div className={styles['store-image-wrapper']}>
-                      <Image
-                        src="/images/store-image-01.png"
-                        alt="Store view 1"
-                        width={592}
-                        height={395}
-                        className={styles['store-image']}
-                      />
-                    </div>
-                    <div className={styles['store-image-wrapper']}>
-                      <Image
-                        src="/images/store-image-02.png"
-                        alt="Store view 2"
-                        width={592}
-                        height={395}
-                        className={styles['store-image']}
-                      />
-                    </div>
-                    <div className={styles['store-image-wrapper']}>
-                      <Image
-                        src="/images/store-image-04.png"
-                        alt="Store view 4"
-                        width={592}
-                        height={395}
-                        className={styles['store-image']}
-                      />
-                    </div>
-                  </div>
-                  <div className={styles['carousel-group']} aria-hidden="true">
-                    <div className={styles['store-image-wrapper']}>
-                      <Image
-                        src="/images/store-image-01.png"
-                        alt="Store view 1"
-                        width={592}
-                        height={395}
-                        className={styles['store-image']}
-                      />
-                    </div>
-                    <div className={styles['store-image-wrapper']}>
-                      <Image
-                        src="/images/store-image-02.png"
-                        alt="Store view 2"
-                        width={592}
-                        height={395}
-                        className={styles['store-image']}
-                      />
-                    </div>
-                    <div className={styles['store-image-wrapper']}>
-                      <Image
-                        src="/images/store-image-04.png"
-                        alt="Store view 4"
-                        width={592}
-                        height={395}
-                        className={styles['store-image']}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
+            </section>
+
+            <section className={styles['content-section']}>
+              <Container>
+                <div></div>
+              </Container>
             </section>
 
             <section ref={newsSectionRef} className={styles['content-section']}>

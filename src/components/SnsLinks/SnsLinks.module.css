@@ -1,8 +1,7 @@
 .sns-links {
   display: grid;
-  place-items: center;
   grid-auto-flow: column;
-  justify-content: center;
+  justify-content: end;
   gap: var(--spacing-xl);
 
   @media (min-width: 768px) {
