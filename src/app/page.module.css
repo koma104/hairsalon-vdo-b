@@ -98,16 +98,43 @@
 /* タイプライターアニメーション用のスタイル */
 .typewriter-text-container {
   position: absolute;
-  bottom: var(--spacing-xl);
+  bottom: var(--spacing-3xl);
   left: var(--spacing-lg);
   z-index: 10;
-  max-width: 400px;
   color: var(--color-white);
 
   @media (min-width: 768px) {
     bottom: var(--spacing-2xl);
     left: var(--spacing-xl);
-    max-width: 500px;
+  }
+}
+
+/* メインタイトル */
+.main-title {
+  margin-block-end: var(--spacing-md);
+  font-family: var(--font-figtree);
+  font-size: var(--font-3xl);
+  font-style: normal;
+  font-weight: var(--font-weight-bold);
+  line-height: 1.2;
+  color: var(--color-white);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+
+  @media (min-width: 768px) {
+    font-size: var(--font-3xl);
+    line-height: 1.1;
+    margin-block-end: var(--spacing-md);
+  }
+}
+
+/* タイトル行 */
+.title-line {
+  overflow: hidden; /* 各行でオーバーフローを隠す */
+
+  span {
+    display: inline-block;
+    transform: translateY(100%); /* 初期状態で下に隠す */
   }
 }
 
@@ -116,10 +143,9 @@
   font-family: var(--font-figtree);
   font-size: var(--font-sm);
   font-weight: var(--font-weight-regular);
-  line-height: 1.6;
+  line-height: 1;
   margin-bottom: var(--spacing-xs);
   opacity: 1; /* 全体を表示 */
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
   min-height: 1.2em; /* 空の状態でも高さを保持 */
 
   @media (min-width: 768px) {

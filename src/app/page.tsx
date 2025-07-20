@@ -132,9 +132,15 @@ function HomeContent() {
   // 画像インデックスの変更を監視
   useEffect(() => {}, [currentImageIndex])
 
-  // タイプライターアニメーション用の文字分割とアニメーション
+  // タイトルとタイプライターアニメーション
   useEffect(() => {
     if (!typewriterContainerRef.current) return
+
+    // タイトル要素を取得
+    const titleElement = typewriterContainerRef.current.querySelector(
+      `.${styles['main-title']}`
+    ) as HTMLElement
+    const titleLines = titleElement?.querySelectorAll(`.${styles['title-line']}`)
 
     // テキスト要素を取得
     const textElements = typewriterContainerRef.current.querySelectorAll(
@@ -155,8 +161,27 @@ function HomeContent() {
       })
     })
 
+    // タイトルアニメーション（下からスライドイン）
+    setTimeout(() => {
+      if (titleLines) {
+        const allTitleSpans: Element[] = []
+        titleLines.forEach((line) => {
+          const spans = line.querySelectorAll('span')
+          allTitleSpans.push(...Array.from(spans))
+        })
+
+        if (allTitleSpans.length > 0) {
+          gsap.to(allTitleSpans, {
+            y: 0,
+            duration: 0.8,
+            ease: 'power3.out',
+          })
+        }
+      }
+    }, 500) // ページ読み込み後0.5秒で開始
+
     // 元サイトと同じアニメーション
-    const speed = 0.05 // より早い間隔で1文字ずつ表示
+    const speed = 0.03 // さらに早い間隔で1文字ずつ表示
 
     const animateLine = (lineIndex: number, charIndex: number = 0) => {
       if (lineIndex >= splitTexts.length) return
@@ -211,10 +236,10 @@ function HomeContent() {
       }, nextDelay)
     }
 
-    // アニメーション開始
+    // アニメーション開始（タイトルアニメーションの後にタイプライター開始）
     setTimeout(() => {
       animateLine(0, 0) // 最初の行から開始
-    }, 1000) // ページ読み込み後1秒で開始
+    }, 1200) // タイトルアニメーション完了後に開始
   }, []) // 初回のみ実行されるように変更
 
   // URLパラメータを監視してニュース詳細を表示（newsクエリパラメータのみ）
@@ -613,6 +638,14 @@ function HomeContent() {
               ))}
             </div>
             <div ref={typewriterContainerRef} className={styles['typewriter-text-container']}>
+              <h1 className={styles['main-title']}>
+                <div className={styles['title-line']}>
+                  <span>Where Style</span>
+                </div>
+                <div className={styles['title-line']}>
+                  <span>Meets You</span>
+                </div>
+              </h1>
               {typewriterText.map((text, index) => (
                 <p key={index} className={styles['typewriter-text']}>
                   {text}
