@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import styles from './news-detail.module.css'
 
 // This is mock data. In a real application, you would fetch this based on the `id` param.
@@ -185,24 +186,69 @@ const allNews = [
 
 const NewsDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
   const [id, setId] = useState<string | null>(null)
+  const pathname = usePathname()
 
   useEffect(() => {
     // パラメータを取得
     params.then(({ id }) => setId(id))
   }, [params])
 
+  // ページ遷移時のスクロールリセットとbody高さクリア
+  useEffect(() => {
+    // ページ遷移時にスクロール位置をトップにリセット
+    window.scrollTo(0, 0)
+
+    console.log('🔍 [News Detail] pathname:', pathname)
+    console.log('🔍 [News Detail] Body height before:', document.body?.style.height)
+
+    if (document.body) {
+      console.log('🔧 [News Detail] body heightをクリアします')
+
+      // 複数の方法でクリア
+      document.body.style.height = ''
+      document.body.style.minHeight = ''
+      document.body.style.maxHeight = ''
+      document.body.removeAttribute('style')
+
+      // 強制的に再計算
+      document.body.style.height = 'auto'
+      document.body.style.minHeight = 'auto'
+
+      console.log('🔧 [News Detail] After - style height:', document.body.style.height)
+
+      // ScrollSmootherもクリーンアップ
+      const windowWithGSAP = window as typeof window & {
+        ScrollSmoother?: { getAll?: () => unknown[] }
+      }
+      const allScrollSmoothers = windowWithGSAP.ScrollSmoother?.getAll?.() || []
+      allScrollSmoothers.forEach((smoother: unknown) => {
+        if (
+          smoother &&
+          typeof smoother === 'object' &&
+          'kill' in smoother &&
+          typeof smoother.kill === 'function'
+        ) {
+          console.log('🔧 [News Detail] ScrollSmootherをkillしました')
+          smoother.kill()
+        }
+      })
+    }
+  }, [pathname, id])
+
   // 初期化中またはIDが取得できていない場合はローディング状態を表示
   if (!id) {
     return (
       <div className={styles.container}>
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'center', 
-          alignItems: 'center', 
-          minHeight: '50vh',
-          fontSize: 'var(--font-sm)',
-          color: 'var(--color-gray-30)'
-        }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            minHeight: '50vh',
+            fontSize: 'var(--font-sm)',
+            color: 'var(--color-gray-30)',
+          }}
+        >
           読み込み中...
         </div>
       </div>
@@ -263,38 +309,52 @@ const NewsDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
 
       <nav className={styles.pagination}>
         {prevArticle ? (
-          <Link 
-            href={`/news/${prevArticle.id}`} 
-            className={styles.prev}
-          >
+          <Link href={`/news/${prevArticle.id}`} className={styles.prev}>
             <svg width="40" height="40" viewBox="0 0 32 32" className="arrow-svg">
-              <polyline points="20,8 12,16 20,24" fill="none" stroke="currentColor" strokeWidth="1.2" />
+              <polyline
+                points="20,8 12,16 20,24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.2"
+              />
             </svg>
             Prev
           </Link>
         ) : (
           <span className={`${styles.prev} ${styles.disabled}`}>
             <svg width="40" height="40" viewBox="0 0 32 32" className="arrow-svg">
-              <polyline points="20,8 12,16 20,24" fill="none" stroke="currentColor" strokeWidth="1.2" />
+              <polyline
+                points="20,8 12,16 20,24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.2"
+              />
             </svg>
             Prev
           </span>
         )}
         {nextArticle ? (
-          <Link 
-            href={`/news/${nextArticle.id}`} 
-            className={styles.next}
-          >
+          <Link href={`/news/${nextArticle.id}`} className={styles.next}>
             Next
             <svg width="40" height="40" viewBox="0 0 32 32" className="arrow-svg">
-              <polyline points="12,8 20,16 12,24" fill="none" stroke="currentColor" strokeWidth="1.2" />
+              <polyline
+                points="12,8 20,16 12,24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.2"
+              />
             </svg>
           </Link>
         ) : (
           <span className={`${styles.next} ${styles.disabled}`}>
             Next
             <svg width="40" height="40" viewBox="0 0 32 32" className="arrow-svg">
-              <polyline points="12,8 20,16 12,24" fill="none" stroke="currentColor" strokeWidth="1.2" />
+              <polyline
+                points="12,8 20,16 12,24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.2"
+              />
             </svg>
           </span>
         )}
@@ -303,4 +363,4 @@ const NewsDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
   )
 }
 
-export default NewsDetailPage 
+export default NewsDetailPage

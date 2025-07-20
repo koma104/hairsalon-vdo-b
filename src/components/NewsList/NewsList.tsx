@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import styles from './NewsList.module.css'
 import { NewsItem } from '@/lib/newsData'
+import { usePageContext } from '@/contexts/PageContext'
 
 interface NewsListProps {
   items: NewsItem[]
@@ -33,6 +34,7 @@ const NewsList = forwardRef<HTMLDivElement, NewsListProps>(
     const [visibleCount, setVisibleCount] = useState(maxItems || 4)
     const [isMoreButtonVisible, setIsMoreButtonVisible] = useState(false)
     const router = useRouter()
+    const { setCurrentPage } = usePageContext()
     const moreButtonRefInternal = useRef<HTMLButtonElement>(null)
 
     const displayedItems = items.slice(0, visibleCount)
@@ -146,7 +148,14 @@ const NewsList = forwardRef<HTMLDivElement, NewsListProps>(
 
         {showViewAllButton && visibleCount >= 8 && (
           <div ref={moreButtonRef} className={styles['more-button-wrapper']}>
-            <Link href="/news" className={styles['news-list-button']}>
+            <Link
+              href="/news"
+              className={styles['news-list-button']}
+              onClick={(e) => {
+                e.preventDefault()
+                setCurrentPage('news')
+              }}
+            >
               すべて見る
             </Link>
           </div>

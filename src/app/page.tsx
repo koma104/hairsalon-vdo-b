@@ -312,7 +312,7 @@ function HomeContent() {
     } else {
       console.log('🔍 ホームページまたはbody要素なし')
     }
-  }, [pathname, currentPage])
+  }, [pathname, currentPage, currentArticleId])
 
   // PCでの直接アクセス時の処理は削除（記事詳細ページで処理する）
 
@@ -832,7 +832,13 @@ function HomeContent() {
             </div>
             {/* Reserve Button */}
             <div className={styles['main-visual-reserve-button']}>
-              <Link href="/reserve">
+              <Link
+                href="/reserve"
+                onClick={(e) => {
+                  e.preventDefault()
+                  setCurrentPage('reserve')
+                }}
+              >
                 <Button variant="secondary">reserve</Button>
               </Link>
             </div>
@@ -920,11 +926,10 @@ function HomeContent() {
                   layout="grid"
                   onItemClick={(item) => {
                     const isMobile = window.innerWidth < 768
+                    setCurrentArticleId(item.id)
+                    setCurrentPage('news')
                     if (isMobile) {
                       router.push(`/news/${item.id}`)
-                    } else {
-                      setCurrentArticleId(item.id)
-                      setCurrentPage('news')
                     }
                   }}
                 />
@@ -952,7 +957,13 @@ function HomeContent() {
                   ))}
                 </div>
                 <div className={styles['menu-button-wrapper']}>
-                  <Link href="/reserve">
+                  <Link
+                    href="/reserve"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      setCurrentPage('reserve')
+                    }}
+                  >
                     <Button variant="secondary">reserve</Button>
                   </Link>
                 </div>
