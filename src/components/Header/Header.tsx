@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { usePathname, useSearchParams } from 'next/navigation'
 import Nav from '../Nav/Nav'
 import styles from './Header.module.css'
+import { usePageContext } from '@/contexts/PageContext'
 
 // useSearchParamsを使用するコンポーネント
 function HeaderContent() {
@@ -15,6 +16,7 @@ function HeaderContent() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const isHomePage = pathname === '/'
+  const { setCurrentPage } = usePageContext()
 
   const hasNewsParam = searchParams.get('news') !== null
 
@@ -123,6 +125,7 @@ function HeaderContent() {
                 href="/"
                 onClick={(e) => {
                   e.preventDefault()
+                  setCurrentPage('home')
                   window.location.replace('/')
                 }}
               >
@@ -130,13 +133,37 @@ function HeaderContent() {
               </Link>
             </li>
             <li>
-              <Link href="/news">news</Link>
+              <Link
+                href="/news"
+                onClick={(e) => {
+                  e.preventDefault()
+                  setCurrentPage('news')
+                }}
+              >
+                news
+              </Link>
             </li>
             <li>
-              <Link href="/reserve">reserve</Link>
+              <Link
+                href="/reserve"
+                onClick={(e) => {
+                  e.preventDefault()
+                  setCurrentPage('reserve')
+                }}
+              >
+                reserve
+              </Link>
             </li>
             <li>
-              <Link href="/staff">staff</Link>
+              <Link
+                href="/staff"
+                onClick={(e) => {
+                  e.preventDefault()
+                  setCurrentPage('staff')
+                }}
+              >
+                staff
+              </Link>
             </li>
           </ul>
         </nav>

@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import styles from './page.module.css'
 import { newsItems } from '@/lib/newsData'
 import Button from '@/components/Button/Button'
@@ -69,6 +69,7 @@ function HomeContent() {
   const { currentPage, setCurrentPage } = usePageContext()
   const router = useRouter()
   const searchParams = useSearchParams()
+  const pathname = usePathname() // 追加
 
   // アニメーション用のref
   const conceptSectionRef = useRef<HTMLElement>(null)
@@ -253,6 +254,62 @@ function HomeContent() {
       setCurrentArticleId(null)
     }
   }, [searchParams, setCurrentPage])
+
+  // ページ遷移時にbody heightをクリア（フッター余白問題の解決）
+  useEffect(() => {
+    console.log('🔍 pathname:', pathname)
+    console.log('🔍 currentPage:', currentPage)
+    console.log('🔍 Body height before:', document.body?.style.height)
+
+    if (currentPage !== 'home' && document.body) {
+      console.log('🔧 ホームページ以外なのでbody heightをクリアします')
+
+      // より強力なbody heightのクリア
+      console.log('🔧 Before - computed height:', window.getComputedStyle(document.body).height)
+      console.log('🔧 Before - style height:', document.body.style.height)
+
+      // 複数の方法でクリア
+      document.body.style.height = ''
+      document.body.style.minHeight = ''
+      document.body.style.maxHeight = ''
+      document.body.removeAttribute('style')
+
+      // 強制的に再計算
+      document.body.style.height = 'auto'
+      document.body.style.minHeight = 'auto'
+
+      console.log('🔧 After - computed height:', window.getComputedStyle(document.body).height)
+      console.log('🔧 After - style height:', document.body.style.height)
+
+      // ScrollSmootherもクリーンアップ
+      const windowWithGSAP = window as typeof window & {
+        ScrollSmoother?: { getAll?: () => unknown[] }
+      }
+      const allScrollSmoothers = windowWithGSAP.ScrollSmoother?.getAll?.() || []
+      allScrollSmoothers.forEach((smoother: unknown) => {
+        if (
+          smoother &&
+          typeof smoother === 'object' &&
+          'kill' in smoother &&
+          typeof smoother.kill === 'function'
+        ) {
+          console.log('🔧 ScrollSmootherをkillしました')
+          smoother.kill()
+        }
+      })
+
+      // 最終確認
+      setTimeout(() => {
+        console.log(
+          '🔧 Final check - computed height:',
+          window.getComputedStyle(document.body).height
+        )
+        console.log('🔧 Final check - style height:', document.body.style.height)
+      }, 100)
+    } else {
+      console.log('🔍 ホームページまたはbody要素なし')
+    }
+  }, [pathname, currentPage])
 
   // PCでの直接アクセス時の処理は削除（記事詳細ページで処理する）
 
