@@ -1,13 +1,21 @@
 .news-list {
   display: grid;
-  grid-auto-flow: row;
   gap: var(--spacing-xl);
   margin-block-end: var(--spacing-xl);
 }
 
+/* Grid layout (ホームページ用) */
+.news-list-grid {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* List layout (ニュース一覧ページ用) */
+.news-list-list {
+  grid-auto-flow: row;
+}
+
 .news-item {
   display: grid;
-  grid-template-columns: 1fr auto;
   gap: var(--spacing-sm);
   padding-inline: 0;
   text-decoration: none;
@@ -40,14 +48,36 @@
   }
 }
 
+/* Grid layout (ホームページ用) */
+.news-item-grid {
+  grid-template-rows: auto 1fr;
+}
+
+/* List layout (ニュース一覧ページ用) */
+.news-item-list {
+  grid-template-columns: 1fr auto;
+}
+
 .news-image-wrapper {
   overflow: hidden;
-  width: var(--news-thumbnail-size-sp);
   height: var(--news-thumbnail-size-sp);
 
   @media (min-width: 768px) {
-    width: var(--news-thumbnail-size-pc);
     height: var(--news-thumbnail-size-pc);
+  }
+}
+
+/* Grid layout用の画像 (ホームページ用) */
+.news-item-grid .news-image-wrapper {
+  width: 100%;
+}
+
+/* List layout用の画像 (ニュース一覧ページ用) */
+.news-item-list .news-image-wrapper {
+  width: var(--news-thumbnail-size-sp);
+
+  @media (min-width: 768px) {
+    width: var(--news-thumbnail-size-pc);
   }
 }
 

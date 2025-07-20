@@ -853,10 +853,11 @@ function HomeContent() {
                 <NewsList
                   ref={newsListRef}
                   items={newsItems}
-                  maxItems={2}
+                  maxItems={4}
                   showMoreButton={true}
                   showViewAllButton={true}
                   moreButtonRef={newsMoreButtonRef}
+                  layout="grid"
                   onItemClick={(item) => {
                     const isMobile = window.innerWidth < 768
                     if (isMobile) {
