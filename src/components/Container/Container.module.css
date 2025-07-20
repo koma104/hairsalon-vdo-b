@@ -1,6 +1,6 @@
 /* 共通のベーススタイル */
 .container {
-  padding-block: var(--spacing-3xl) var(--spacing-2xl);
+  padding-block: var(--spacing-3xl);
   padding-inline: var(--spacing-lg);
 
   @media (min-width: 768px) {

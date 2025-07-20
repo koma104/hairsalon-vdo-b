@@ -180,8 +180,8 @@ function HomeContent() {
       }
     }, 500) // ページ読み込み後0.5秒で開始
 
-    // 元サイトと同じアニメーション
-    const speed = 0.03 // さらに早い間隔で1文字ずつ表示
+    // タイプライターアニメーション設定
+    const speed = 0.02 // 文字表示速度を少し早く
 
     const animateLine = (lineIndex: number, charIndex: number = 0) => {
       if (lineIndex >= splitTexts.length) return
@@ -230,7 +230,7 @@ function HomeContent() {
 
       // 次の文字へ（行の最後の文字の場合は行間の溜めを追加）
       const randomSpeed = speed + (Math.random() - 0.5) * 0.02 // ±0.01秒のランダム
-      const nextDelay = charIndex === chars.length - 1 ? speed * 1000 + 800 : randomSpeed * 1000
+      const nextDelay = charIndex === chars.length - 1 ? speed * 1000 + 400 : randomSpeed * 1000
       setTimeout(() => {
         animateLine(lineIndex, charIndex + 1)
       }, nextDelay)
@@ -525,6 +525,45 @@ function HomeContent() {
 
       // メニューセクションのアニメーション
       if (menuSectionRef.current && menuTitleRef.current && menuWrapperRef.current) {
+        // メニューアイテムの全spanを取得
+        const menuItems = menuWrapperRef.current.querySelectorAll(`.${styles['menu-item']}`)
+        const nameSpans: HTMLElement[] = []
+        const priceSpans: HTMLElement[] = []
+
+        menuItems.forEach((item) => {
+          const spans = item.querySelectorAll('span')
+          if (spans.length >= 2) {
+            nameSpans.push(spans[0] as HTMLElement)
+            priceSpans.push(spans[1] as HTMLElement)
+          }
+        })
+
+        // SplitTextで文字分割
+        const nameSplitTexts: SplitText[] = []
+        const priceSplitTexts: SplitText[] = []
+
+        nameSpans.forEach((span) => {
+          const splitText = new SplitText(span, { type: 'chars' })
+          nameSplitTexts.push(splitText)
+          // 初期状態で全文字を非表示
+          gsap.set(splitText.chars, {
+            opacity: 0,
+            backgroundColor: 'transparent',
+            color: 'inherit',
+          })
+        })
+
+        priceSpans.forEach((span) => {
+          const splitText = new SplitText(span, { type: 'chars' })
+          priceSplitTexts.push(splitText)
+          // 初期状態で全文字を非表示
+          gsap.set(splitText.chars, {
+            opacity: 0,
+            backgroundColor: 'transparent',
+            color: 'inherit',
+          })
+        })
+
         // 初期状態を設定
         gsap.set([menuTitleRef.current, menuWrapperRef.current], {
           opacity: 0,
@@ -554,7 +593,7 @@ function HomeContent() {
               ease: 'power2.out',
             },
             0.05
-          ) // ディレイを短縮
+          )
         }
 
         // メニューラッパー（opacityのみ）
@@ -567,8 +606,67 @@ function HomeContent() {
               ease: 'power2.out',
             },
             '-=0.4'
-          ) // 重複時間を短縮
+          )
         }
+
+        // タイプライター効果の実行関数
+        const animateMenuTypewriter = () => {
+          // 1. 全行のメニュー名を同時にタイプライター開始
+          nameSplitTexts.forEach((splitText) => {
+            const chars = splitText.chars as HTMLElement[]
+            chars.forEach((char, charIndex) => {
+              const delay = charIndex * 0.03 // 各行内で30msずつ遅延
+              gsap.to(char, {
+                opacity: 1,
+                backgroundColor: '#000',
+                color: '#fff',
+                duration: 0.1,
+                delay: delay,
+                ease: 'none',
+                onComplete: () => {
+                  // 文字表示後に背景を透明にして文字色を元に戻す
+                  gsap.to(char, {
+                    backgroundColor: 'transparent',
+                    color: 'inherit',
+                    duration: 0.1,
+                    delay: 0.05,
+                  })
+                },
+              })
+            })
+          })
+
+          // 2. メニュー名完了後に価格を全行同時にタイプライター開始
+          const maxNameDuration = Math.max(...nameSplitTexts.map((st) => st.chars.length)) * 0.03
+          const priceStartDelay = maxNameDuration + 0.3 // 最長のメニュー名完了後300ms待機
+
+          priceSplitTexts.forEach((splitText) => {
+            const chars = splitText.chars as HTMLElement[]
+            chars.forEach((char, charIndex) => {
+              const delay = priceStartDelay + charIndex * 0.025 // 各行内で25msずつ遅延
+              gsap.to(char, {
+                opacity: 1,
+                backgroundColor: '#000',
+                color: '#fff',
+                duration: 0.08,
+                delay: delay,
+                ease: 'none',
+                onComplete: () => {
+                  // 文字表示後に背景を透明にして文字色を元に戻す
+                  gsap.to(char, {
+                    backgroundColor: 'transparent',
+                    color: 'inherit',
+                    duration: 0.1,
+                    delay: 0.05,
+                  })
+                },
+              })
+            })
+          })
+        }
+
+        // メニューラッパー表示後にタイプライター開始
+        menuTl.call(animateMenuTypewriter, [], 0.3)
       }
 
       if (heroParallaxAnimation?.scrollTrigger) {

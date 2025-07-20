@@ -168,7 +168,7 @@
   }
 }
 
-/* 元サイトと同じcharクラスのスタイル */
+/* タイプライター文字のスタイル */
 .char {
   display: inline-block;
   opacity: 0;
