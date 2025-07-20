@@ -36,7 +36,7 @@
 
 /* フッター専用のスタイル */
 .sns-links-footer {
-  justify-content: end;
+  justify-content: start;
 
   & a {
     color: var(--color-white); /* フッター専用の色 */

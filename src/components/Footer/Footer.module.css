@@ -82,7 +82,7 @@
 }
 
 .copyright {
-  text-align: center;
+  text-align: left;
   font-size: var(--font-xxs);
 
   @media (min-width: 768px) {
