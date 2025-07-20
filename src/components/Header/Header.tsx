@@ -3,7 +3,7 @@
 import React, { useState, useEffect, Suspense } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { usePathname, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import Nav from '../Nav/Nav'
 import styles from './Header.module.css'
 import { usePageContext } from '@/contexts/PageContext'
@@ -13,10 +13,9 @@ function HeaderContent() {
   const [isOpen, setIsOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const [isClient, setIsClient] = useState(false)
-  const pathname = usePathname()
   const searchParams = useSearchParams()
-  const isHomePage = pathname === '/'
-  const { setCurrentPage } = usePageContext()
+  const { currentPage, setCurrentPage } = usePageContext()
+  const isHomePage = currentPage === 'home'
 
   const hasNewsParam = searchParams.get('news') !== null
 
@@ -70,7 +69,7 @@ function HeaderContent() {
 
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [isClient, isHomePage, hasNewsParam])
+  }, [isClient, isHomePage, hasNewsParam, currentPage])
 
   const toggleMenu = () => {
     setIsOpen(!isOpen)

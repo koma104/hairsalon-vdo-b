@@ -257,6 +257,9 @@ function HomeContent() {
 
   // ページ遷移時にbody heightをクリア（フッター余白問題の解決）
   useEffect(() => {
+    // ページ遷移時にスクロール位置をトップにリセット
+    window.scrollTo(0, 0)
+
     console.log('🔍 pathname:', pathname)
     console.log('🔍 currentPage:', currentPage)
     console.log('🔍 Body height before:', document.body?.style.height)
