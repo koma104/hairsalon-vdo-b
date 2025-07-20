@@ -631,7 +631,7 @@ function HomeContent() {
                   priority={index === 0}
                   className={`${styles['main-image']} ${
                     index === currentImageIndex ? styles['current'] : styles['hidden']
-                  }`}
+                  } ${index === 2 ? styles['image-offset-right'] : ''}`}
                   sizes="100vw"
                   quality={90}
                 />

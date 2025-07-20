@@ -67,6 +67,14 @@
     opacity: 0;
     transform: scale(1.1);
   }
+
+  &.image-offset-right {
+    object-position: 42% center;
+
+    @media (min-width: 768px) {
+      object-position: center;
+    }
+  }
 }
 
 .border-line {
@@ -147,12 +155,6 @@
   margin-bottom: var(--spacing-xs);
   opacity: 1; /* 全体を表示 */
   min-height: 1.2em; /* 空の状態でも高さを保持 */
-
-  @media (min-width: 768px) {
-    font-size: var(--font-md);
-    line-height: 1.8;
-    min-height: 1.8em;
-  }
 
   &:last-child {
     margin-bottom: 0;
