@@ -329,6 +329,15 @@ function HomeContent() {
   // PCでの直接アクセス時の処理は削除（記事詳細ページで処理する）
 
   useEffect(() => {
+    // 初期ビューポート高さを取得してCSS変数に設定（iOS対応）
+    const setInitialViewportHeight = () => {
+      const vh = window.innerHeight
+      document.documentElement.style.setProperty('--initial-vh', `${vh}px`)
+    }
+
+    // 初期設定
+    setInitialViewportHeight()
+
     // DOMが完全にマウントされるまで少し待つ
     const timer = setTimeout(() => {
       // デバイス判定
