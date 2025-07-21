@@ -1010,12 +1010,12 @@ function HomeContent() {
                   speed: '0.9',
                 },
                 {
-                  src: '/images/prx-image-11.jpg',
+                  src: '/images/prx-image-06.jpg',
                   alt: 'Photo 6',
                   speed: '1.1',
                 },
                 {
-                  src: '/images/prx-image-08.jpg',
+                  src: '/images/prx-image-07.jpg',
                   alt: 'Photo 7',
                   speed: '0.9',
                 },
