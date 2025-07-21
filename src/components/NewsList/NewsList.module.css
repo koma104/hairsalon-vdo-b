@@ -2,6 +2,7 @@
   display: grid;
   gap: var(--spacing-xl);
   margin-block-end: var(--spacing-xl);
+  overflow: hidden; /* アニメーション用：初期状態で下に隠れた要素を非表示 */
 }
 
 /* Grid layout (ホームページ用) */
@@ -32,6 +33,9 @@
   font-family: inherit;
   font-size: inherit;
   overflow: hidden;
+  /* アニメーション用の初期状態（JSで上書きされる） */
+  transform: translateY(50px);
+  opacity: 0;
 
   @media (min-width: 768px) {
     gap: var(--spacing-md);

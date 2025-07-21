@@ -4,6 +4,7 @@ import { useState, forwardRef, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { gsap } from 'gsap'
 import styles from './NewsList.module.css'
 import { NewsItem } from '@/lib/newsData'
 import { usePageContext } from '@/contexts/PageContext'
@@ -18,6 +19,7 @@ interface NewsListProps {
   onItemClick?: (item: NewsItem) => void
   moreButtonRef?: React.RefObject<HTMLDivElement | null>
   layout?: 'grid' | 'list'
+  scrollTriggerRef?: React.RefObject<gsap.plugins.ScrollTriggerInstance | null>
 }
 
 const NewsList = forwardRef<HTMLDivElement, NewsListProps>(
@@ -32,6 +34,7 @@ const NewsList = forwardRef<HTMLDivElement, NewsListProps>(
       onItemClick,
       moreButtonRef,
       layout = 'list',
+      scrollTriggerRef,
     },
     ref
   ) => {
@@ -48,6 +51,19 @@ const NewsList = forwardRef<HTMLDivElement, NewsListProps>(
         const isMobile = window.innerWidth < 768
         const initialCount = isMobile ? maxItemsSp : maxItemsPc
         setVisibleCount(initialCount)
+
+        // 初期要素をアニメーション済み状態にする
+        setTimeout(() => {
+          if (ref && typeof ref === 'object' && ref.current) {
+            const newsItems = ref.current.querySelectorAll('button[class*="news-item"]')
+            if (newsItems.length > 0) {
+              gsap.set(newsItems, {
+                y: 0,
+                opacity: 1,
+              })
+            }
+          }
+        }, 100)
       }
     }, []) // 依存配列を空にして一度だけ実行
 
@@ -109,7 +125,54 @@ const NewsList = forwardRef<HTMLDivElement, NewsListProps>(
 
     const handleShowMore = () => {
       const { addCount } = getCountSettings()
-      setVisibleCount((prev) => prev + addCount)
+      const newCount = visibleCount + addCount
+
+      // 新しく追加される要素を最初から非表示状態でレンダリング
+      setVisibleCount(newCount)
+
+      // 新しく追加された要素にアニメーションを適用
+      setTimeout(() => {
+        if (ref && typeof ref === 'object' && ref.current) {
+          const newsItems = ref.current.querySelectorAll('button[class*="news-item"]')
+          const newItems = Array.from(newsItems).slice(visibleCount, newCount)
+
+          if (newItems.length > 0) {
+            // 初期状態を設定（既に非表示になっているはずだが念のため）
+            gsap.set(newItems, {
+              y: 50,
+              opacity: 0,
+            })
+
+            // ScrollTriggerが利用可能な場合は、新しい要素をScrollTriggerに追加
+            if (scrollTriggerRef?.current) {
+              // ScrollTriggerを再実行して新しい要素も含める
+              scrollTriggerRef.current.refresh()
+
+              // 新しい要素を直接アニメーション（ScrollTriggerの制御下で）
+              newItems.forEach((item, index) => {
+                gsap.to(item, {
+                  y: 0,
+                  opacity: 1,
+                  duration: 0.6,
+                  ease: 'power2.out',
+                  delay: index * 0.1, // 0.1秒ずつ遅延
+                })
+              })
+            } else {
+              // ScrollTriggerが利用できない場合は直接アニメーション
+              newItems.forEach((item, index) => {
+                gsap.to(item, {
+                  y: 0,
+                  opacity: 1,
+                  duration: 0.6,
+                  ease: 'power2.out',
+                  delay: index * 0.1, // 0.1秒ずつ遅延
+                })
+              })
+            }
+          }
+        }
+      }, 50) // DOM更新を待つ（時間を短縮）
     }
 
     return (

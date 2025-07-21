@@ -80,6 +80,7 @@ function HomeContent() {
   const newsSectionRef = useRef<HTMLElement>(null)
   const newsListRef = useRef<HTMLDivElement>(null)
   const newsMoreButtonRef = useRef<HTMLDivElement>(null)
+  const newsScrollTriggerRef = useRef<gsap.plugins.ScrollTriggerInstance | null>(null)
 
   // メニューセクション用のref
   const menuSectionRef = useRef<HTMLElement>(null)
@@ -530,34 +531,53 @@ function HomeContent() {
 
       // ニュースセクションのアニメーション
       if (newsSectionRef.current && newsListRef.current && newsMoreButtonRef.current) {
-        // 初期状態を設定（SectionTitleは除外 - 独自アニメーションがあるため）
-        gsap.set([newsListRef.current, newsMoreButtonRef.current], {
+        // ニュースアイテムを取得（NewsListコンポーネント内から）
+        const newsItems = newsListRef.current?.querySelectorAll('button[class*="news-item"]')
+
+        // 初期状態を設定（news-itemを下から隠す）
+        if (newsItems && newsItems.length > 0) {
+          gsap.set(newsItems, {
+            y: 50,
+            opacity: 0,
+          })
+        }
+
+        // moreボタンの初期状態
+        gsap.set(newsMoreButtonRef.current, {
           opacity: 0,
         })
 
-        // ニュースタイトルのアニメーション（1度だけ実行）
+        // ニュースタイトルのアニメーション
         const newsTl = gsap.timeline({
           scrollTrigger: {
             trigger: newsSectionRef.current,
             start: 'top bottom-=200',
             end: 'bottom top+=100',
-            toggleActions: 'play none none reverse',
+            once: true, // 1度だけ実行
           },
         })
 
+        // ScrollTriggerの参照を保存
+        if (newsTl.scrollTrigger) {
+          newsScrollTriggerRef.current = newsTl.scrollTrigger
+        }
+
         // SectionTitleのアニメーションは削除（コンポーネント内で処理）
 
-        // ニュースリスト（opacityのみ）
-        if (newsListRef.current) {
-          newsTl.to(
-            newsListRef.current,
-            {
-              opacity: 1,
-              duration: 0.8,
-              ease: 'power2.out',
-            },
-            0.2
-          ) // SectionTitleアニメーション削除後のタイミング調整
+        // ニュースアイテムを順番に下から表示
+        if (newsItems && newsItems.length > 0) {
+          newsItems.forEach((item, index) => {
+            newsTl.to(
+              item,
+              {
+                y: 0,
+                opacity: 1,
+                duration: 0.6,
+                ease: 'power2.out',
+              },
+              0.2 + index * 0.1 // 0.1秒ずつ遅延
+            )
+          })
         }
 
         // moreボタン（opacityのみ）
@@ -1075,6 +1095,7 @@ function HomeContent() {
                   showViewAllButton={true}
                   moreButtonRef={newsMoreButtonRef}
                   layout="grid"
+                  scrollTriggerRef={newsScrollTriggerRef}
                   onItemClick={(item) => {
                     const isMobile = window.innerWidth < 768
                     setCurrentArticleId(item.id)
