@@ -73,19 +73,16 @@ function HomeContent() {
 
   // アニメーション用のref
   const conceptSectionRef = useRef<HTMLElement>(null)
-  const conceptTitleRef = useRef<HTMLHeadingElement>(null)
   const conceptCatchphraseRef = useRef<HTMLHeadingElement>(null)
   const conceptTextRef = useRef<HTMLParagraphElement>(null)
 
   // ニュースセクション用のref
   const newsSectionRef = useRef<HTMLElement>(null)
-  const newsTitleRef = useRef<HTMLHeadingElement>(null)
   const newsListRef = useRef<HTMLDivElement>(null)
   const newsMoreButtonRef = useRef<HTMLDivElement>(null)
 
   // メニューセクション用のref
   const menuSectionRef = useRef<HTMLElement>(null)
-  const menuTitleRef = useRef<HTMLHeadingElement>(null)
   const menuWrapperRef = useRef<HTMLDivElement>(null)
 
   // タイプライターアニメーション用のref
@@ -454,92 +451,74 @@ function HomeContent() {
         })
       }
 
-      // コンセプトセクションのアニメーション
-      if (conceptSectionRef.current && conceptTitleRef.current && conceptCatchphraseRef.current) {
-        // 初期状態を設定（p要素は除外）
-        gsap.set([conceptTitleRef.current, conceptCatchphraseRef.current], {
-          opacity: 0,
-          y: 15,
+      // コンセプトキャッチフレーズとテキストのアニメーション
+      if (conceptSectionRef.current && conceptCatchphraseRef.current && conceptTextRef.current) {
+        // キャッチフレーズのアニメーション
+        const catchphraseSplit = new SplitText(conceptCatchphraseRef.current, {
+          type: 'lines',
+          linesClass: 'catchphrase-line',
+          mask: 'lines',
+          autoSplit: true,
+        })
+        const catchphraseLines = [...catchphraseSplit.lines]
+
+        catchphraseLines.forEach((line: Element) => {
+          gsap.set(line, {
+            yPercent: 100,
+            willChange: 'transform',
+          })
         })
 
-        // 下からふわっと表示アニメーション
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: conceptSectionRef.current,
-            start: 'top bottom-=200',
-            end: 'bottom top+=100',
-            toggleActions: 'play none none reverse',
+        // テキストのアニメーション - 動的行分割システムを起動
+        if (document.fonts && document.fonts.ready) {
+          document.fonts.ready.then(() => {
+            setTimeout(() => {
+              const dynamicLines = createDynamicLineSplit()
+              if (dynamicLines && dynamicLines.length > 0) {
+                setupDynamicAnimation(dynamicLines)
+                setupResizeObserver()
+              }
+            }, 200)
+          })
+        } else {
+          setTimeout(() => {
+            const dynamicLines = createDynamicLineSplit()
+            if (dynamicLines && dynamicLines.length > 0) {
+              setupDynamicAnimation(dynamicLines)
+              setupResizeObserver()
+            }
+          }, 500)
+        }
+
+        // キャッチフレーズ用ScrollTrigger
+        ScrollTrigger.create({
+          trigger: conceptCatchphraseRef.current,
+          start: 'top bottom-=230',
+          id: 'catchphrase',
+          onEnter: () => {
+            gsap.to(catchphraseLines, {
+              yPercent: 0,
+              duration: 0.8,
+              ease: 'power3.out',
+              stagger: 0.15,
+            })
+          },
+          onLeaveBack: () => {
+            gsap.to(catchphraseLines, {
+              yPercent: 100,
+              duration: 0.5,
+              ease: 'power3.in',
+              stagger: 0.1,
+            })
           },
         })
-
-        // h2タイトル（opacity + 下から移動）
-        if (conceptTitleRef.current) {
-          tl.to(
-            conceptTitleRef.current,
-            {
-              opacity: 1,
-              y: 0,
-              duration: 1.0,
-              ease: 'power2.out',
-            },
-            0.05
-          ) // ディレイを短縮
-        }
-
-        // h3キャッチフレーズ（opacity + 下から移動）
-        if (conceptCatchphraseRef.current) {
-          tl.to(
-            conceptCatchphraseRef.current,
-            {
-              opacity: 1,
-              y: 0,
-              duration: 1.1,
-              ease: 'power2.out',
-            },
-            '-=0.8'
-          ) // 重複時間を調整
-        }
-
-        // コンセプトテキスト（行ごとに表示）
-        if (conceptTextRef.current) {
-          // span要素を取得
-          const spans = conceptTextRef.current.querySelectorAll('span')
-
-          // 初期状態を設定
-          spans.forEach((span) => {
-            gsap.set(span, {
-              opacity: 0,
-            })
-          })
-
-          // 各行を順番にアニメーション
-          spans.forEach((span, index) => {
-            tl.to(
-              span,
-              {
-                opacity: 1,
-                duration: 0.6,
-                ease: 'power2.out',
-              },
-              `-=${index === 0 ? 0.6 : 0.4}`
-            ) // 重複時間を短縮
-          })
-        }
       }
 
       // ニュースセクションのアニメーション
-      if (
-        newsSectionRef.current &&
-        newsTitleRef.current &&
-        newsListRef.current &&
-        newsMoreButtonRef.current
-      ) {
-        // 初期状態を設定
-        gsap.set([newsTitleRef.current, newsListRef.current, newsMoreButtonRef.current], {
+      if (newsSectionRef.current && newsListRef.current && newsMoreButtonRef.current) {
+        // 初期状態を設定（SectionTitleは除外 - 独自アニメーションがあるため）
+        gsap.set([newsListRef.current, newsMoreButtonRef.current], {
           opacity: 0,
-        })
-        gsap.set(newsTitleRef.current, {
-          y: 15,
         })
 
         // ニュースタイトルのアニメーション
@@ -552,19 +531,7 @@ function HomeContent() {
           },
         })
 
-        // h2タイトル（opacity + 下から移動）
-        if (newsTitleRef.current) {
-          newsTl.to(
-            newsTitleRef.current,
-            {
-              opacity: 1,
-              y: 0,
-              duration: 0.8,
-              ease: 'power2.out',
-            },
-            0.05
-          ) // ディレイを短縮
-        }
+        // SectionTitleのアニメーションは削除（コンポーネント内で処理）
 
         // ニュースリスト（opacityのみ）
         if (newsListRef.current) {
@@ -575,8 +542,8 @@ function HomeContent() {
               duration: 0.8,
               ease: 'power2.out',
             },
-            '-=0.4'
-          ) // 重複時間を短縮
+            0.2
+          ) // SectionTitleアニメーション削除後のタイミング調整
         }
 
         // moreボタン（opacityのみ）
@@ -594,7 +561,7 @@ function HomeContent() {
       }
 
       // メニューセクションのアニメーション
-      if (menuSectionRef.current && menuTitleRef.current && menuWrapperRef.current) {
+      if (menuSectionRef.current && menuWrapperRef.current) {
         const initializeMenuAnimations = async () => {
           // フォント読み込み完了を待つ
           await document.fonts.ready
@@ -638,12 +605,9 @@ function HomeContent() {
             })
           })
 
-          // 初期状態を設定
-          gsap.set([menuTitleRef.current, menuWrapperRef.current], {
+          // 初期状態を設定（SectionTitleは除外 - 独自アニメーションがあるため）
+          gsap.set(menuWrapperRef.current, {
             opacity: 0,
-          })
-          gsap.set(menuTitleRef.current, {
-            y: 15,
           })
 
           // メニュータイトルのアニメーション
@@ -656,19 +620,7 @@ function HomeContent() {
             },
           })
 
-          // h2タイトル（opacity + 下から移動）
-          if (menuTitleRef.current) {
-            menuTl.to(
-              menuTitleRef.current,
-              {
-                opacity: 1,
-                y: 0,
-                duration: 0.8,
-                ease: 'power2.out',
-              },
-              0.05
-            )
-          }
+          // SectionTitleのアニメーションは削除（コンポーネント内で処理）
 
           // メニューラッパー（opacityのみ）
           if (menuWrapperRef.current) {
@@ -679,7 +631,7 @@ function HomeContent() {
                 duration: 0.8,
                 ease: 'power2.out',
               },
-              '-=0.4'
+              0.2
             )
           }
 
@@ -810,6 +762,153 @@ function HomeContent() {
     }
   }, [])
 
+  // 動的行分割システム
+  const createDynamicLineSplit = (): NodeListOf<Element> | null => {
+    if (!conceptTextRef.current) return null
+
+    const text = conceptTextRef.current.textContent || ''
+    const element = conceptTextRef.current
+
+    // 元のテキストに戻す
+    element.innerHTML = text
+
+    // 一文字ずつスパンで包んで実際の行を検出
+    const chars = text.split('')
+    element.innerHTML = chars
+      .map(
+        (char, index) => `<span data-char-index="${index}">${char === ' ' ? '&nbsp;' : char}</span>`
+      )
+      .join('')
+
+    // 各文字の位置を取得して行を検出
+    const charSpans = element.querySelectorAll('[data-char-index]')
+    const lines: string[] = []
+    let currentLine = ''
+    let currentTop = -1
+
+    charSpans.forEach((span, index) => {
+      const spanElement = span as HTMLElement
+      const rect = spanElement.getBoundingClientRect()
+
+      // 新しい行の開始を検出（Y座標が変わった時）
+      if (currentTop === -1) {
+        currentTop = Math.round(rect.top)
+      } else if (Math.round(rect.top) !== currentTop) {
+        // 新しい行に移った
+        if (currentLine.trim()) {
+          lines.push(currentLine.trim())
+        }
+        currentLine = ''
+        currentTop = Math.round(rect.top)
+      }
+
+      currentLine += chars[index]
+    })
+
+    // 最後の行を追加
+    if (currentLine.trim()) {
+      lines.push(currentLine.trim())
+    }
+
+    // 検出した行でHTMLを再構築
+    element.innerHTML = lines
+      .map((line, index) => `<div class="dynamic-line" data-line="${index}">${line}</div>`)
+      .join('')
+
+    return element.querySelectorAll('.dynamic-line')
+  }
+
+  // ResizeObserver でリサイズ監視
+  const setupResizeObserver = () => {
+    if (!conceptTextRef.current) return
+
+    let resizeTimeout: NodeJS.Timeout
+
+    const resizeObserver = new ResizeObserver(() => {
+      // デバウンス処理（リサイズ完了後に実行）
+      clearTimeout(resizeTimeout)
+      resizeTimeout = setTimeout(() => {
+        // ScrollTriggerを一時無効化
+        ScrollTrigger.getAll().forEach((trigger) => {
+          if (trigger.vars?.id === 'dynamic-text') {
+            trigger.kill()
+          }
+        })
+
+        // 動的行分割を再実行
+        const dynamicLines = createDynamicLineSplit()
+        if (dynamicLines) {
+          setupDynamicAnimation(dynamicLines)
+        }
+      }, 300) // 300ms後に実行
+    })
+
+    resizeObserver.observe(conceptTextRef.current)
+
+    // クリーンアップ関数を返す
+    return () => resizeObserver.disconnect()
+  }
+
+  // 動的行アニメーション設定
+  const setupDynamicAnimation = (lines: NodeListOf<Element>) => {
+    if (!lines.length || !conceptTextRef.current) return
+
+    // 親要素の設定をマスクベースに最適化
+    gsap.set(conceptTextRef.current, {
+      position: 'relative',
+    })
+
+    // 各行の詳細確認とマスクベース初期設定
+    lines.forEach((line) => {
+      const lineElement = line as HTMLElement
+
+      // 各行を個別にラップしてoverflow: hiddenでマスク
+      const lineWrapper = document.createElement('div')
+      lineWrapper.style.overflow = 'hidden'
+      lineWrapper.style.position = 'relative'
+
+      // 元の行をラッパーで包む
+      const parent = lineElement.parentNode
+      if (parent) {
+        parent.insertBefore(lineWrapper, lineElement)
+        lineWrapper.appendChild(lineElement)
+      }
+
+      // 各行を行の高さ分だけ下に移動
+      gsap.set(lineElement, {
+        yPercent: 100,
+        willChange: 'transform',
+        force3D: true,
+        immediateRender: true,
+      })
+    })
+
+    // ScrollTrigger設定
+    ScrollTrigger.create({
+      trigger: conceptTextRef.current,
+      start: 'top bottom-=250',
+      id: 'dynamic-text',
+      onEnter: () => {
+        gsap.to(lines, {
+          yPercent: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+          stagger: 0.15,
+          force3D: true,
+        })
+      },
+      onLeaveBack: () => {
+        gsap.to(lines, {
+          yPercent: 100,
+          duration: 0.5,
+          ease: 'power3.in',
+          stagger: 0.1,
+          force3D: true,
+        })
+      },
+    })
+  }
+
   return (
     <>
       {currentPage === 'home' && (
@@ -869,22 +968,16 @@ function HomeContent() {
           <>
             <section ref={conceptSectionRef} className={styles['content-section']}>
               <Container>
-                <SectionTitle ref={conceptTitleRef} tag="h2">
-                  concept
-                </SectionTitle>
+                <div className={styles['section-title-wrapper']}>
+                  <SectionTitle tag="h2">concept</SectionTitle>
+                </div>
                 <h3 ref={conceptCatchphraseRef} className={styles['concept-catchphrase']}>
                   髪の美しさが、あなたの毎日を
                   <br />
                   もっと特別に。
                 </h3>
                 <p ref={conceptTextRef} className={styles['concept-text']}>
-                  <span>
-                    一人ひとりの髪質やライフスタイルに寄り添い、ダメージを抑えた施術と心地よい空間で、理想のヘアスタイルをご提案します。
-                  </span>
-                  <span>髪にやさしいケアと、少しの変化で生まれる新しい自分。</span>
-                  <span>
-                    毎日がもっと自信に満ちて、笑顔で過ごせるよう、私たちがサポートいたします。
-                  </span>
+                  一人ひとりの髪質やライフスタイルに寄り添い、ダメージを抑えた施術と心地よい空間で、理想のヘアスタイルをご提案します。髪にやさしいケアと、少しの変化で生まれる新しい自分。毎日がもっと自信に満ちて、笑顔で過ごせるよう、私たちがサポートいたします。
                 </p>
               </Container>
             </section>
@@ -931,9 +1024,9 @@ function HomeContent() {
 
             <section ref={newsSectionRef} className={styles['content-section']}>
               <Container>
-                <SectionTitle ref={newsTitleRef} tag="h2">
-                  news
-                </SectionTitle>
+                <div className={styles['section-title-wrapper']}>
+                  <SectionTitle tag="h2">news</SectionTitle>
+                </div>
                 <NewsList
                   ref={newsListRef}
                   items={newsItems}
@@ -956,9 +1049,9 @@ function HomeContent() {
 
             <section ref={menuSectionRef} className={styles['content-section']}>
               <Container>
-                <SectionTitle ref={menuTitleRef} tag="h2">
-                  menu
-                </SectionTitle>
+                <div className={styles['section-title-wrapper']}>
+                  <SectionTitle tag="h2">menu</SectionTitle>
+                </div>
                 <div ref={menuWrapperRef} className={styles['menu-wrapper']}>
                   {menuCategories.map((cat) => (
                     <div key={cat.category} className={styles['menu-category']}>

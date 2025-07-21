@@ -1,6 +1,4 @@
 .section-title {
-  margin-block: 0 var(--spacing-lg);
-  padding-block: var(--spacing-xl) var(--spacing-sm);
   padding-inline: var(--spacing-sm);
   font-size: var(--font-3xl);
   font-weight: var(--font-weight-regular);
@@ -10,4 +8,13 @@
   text-transform: uppercase;
   font-family: var(--font-playfair-italic);
   font-style: italic;
+  line-height: 1; /* フォントの余白を除去 */
+  /* main-titleと同じoverflow hidden設定 */
+  overflow: hidden;
+}
+
+.section-title span {
+  display: inline-block;
+  transform: translateY(100%); /* 初期状態で下に隠す（main-titleと同じ） */
+  line-height: 1; /* spanでも明示的に設定 */
 }

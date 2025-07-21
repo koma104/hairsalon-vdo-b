@@ -1,3 +1,8 @@
+/* セクションタイトルのラッパー */
+.section-title-wrapper {
+  margin-block-end: var(--spacing-2xl);
+}
+
 /* メインビジュアル */
 .main-visual {
   position: sticky;
@@ -204,9 +209,14 @@
 .concept-text {
   font-size: var(--font-xs);
   line-height: 2;
+  /* 幅制限を追加してテキストの折り返しを確実にする */
+  max-width: 100%;
 
-  span {
-    display: block;
+  /* 動的行分割要素の基本設定 */
+  .dynamic-line {
+    will-change: transform;
+    position: relative;
+    /* transform設定はJavaScriptで動的に計算 */
   }
 
   @media (min-width: 768px) {
@@ -364,7 +374,6 @@
   position: relative;
   z-index: 2;
   background-color: var(--color-gray-05);
-  margin-block-end: var(--spacing-sm);
 }
 
 .content-section {
