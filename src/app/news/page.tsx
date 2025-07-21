@@ -132,6 +132,7 @@ const NewsListContent = () => {
       <NewsList
         items={displayedItems}
         maxItems={ITEMS_PER_PAGE}
+        layout="grid"
         onItemClick={(item) => {
           // スクロール位置をトップにリセット
           window.scrollTo(0, 0)
