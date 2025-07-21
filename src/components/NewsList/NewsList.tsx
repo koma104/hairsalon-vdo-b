@@ -11,6 +11,8 @@ import { usePageContext } from '@/contexts/PageContext'
 interface NewsListProps {
   items: NewsItem[]
   maxItems?: number
+  maxItemsSp?: number
+  maxItemsPc?: number
   showMoreButton?: boolean
   showViewAllButton?: boolean
   onItemClick?: (item: NewsItem) => void
@@ -23,6 +25,8 @@ const NewsList = forwardRef<HTMLDivElement, NewsListProps>(
     {
       items,
       maxItems,
+      maxItemsSp,
+      maxItemsPc,
       showMoreButton = false,
       showViewAllButton = false,
       onItemClick,
@@ -31,11 +35,30 @@ const NewsList = forwardRef<HTMLDivElement, NewsListProps>(
     },
     ref
   ) => {
-    const [visibleCount, setVisibleCount] = useState(maxItems || 4)
+    // 初期値はSSR/CSR共通にするため、maxItemsまたはデフォルト値を使用
+    const [visibleCount, setVisibleCount] = useState(maxItems || maxItemsSp || 6)
     const [isMoreButtonVisible, setIsMoreButtonVisible] = useState(false)
     const router = useRouter()
     const { setCurrentPage } = usePageContext()
     const moreButtonRefInternal = useRef<HTMLButtonElement>(null)
+
+    // Hydration後にクライアントサイドで正しい表示件数を設定
+    useEffect(() => {
+      if (maxItemsSp !== undefined && maxItemsPc !== undefined) {
+        const updateMaxItems = () => {
+          const isMobile = window.innerWidth < 768
+          const newMaxItems = isMobile ? maxItemsSp : maxItemsPc
+          setVisibleCount(newMaxItems)
+        }
+
+        // 初回実行
+        updateMaxItems()
+
+        // リサイズ時にも実行
+        window.addEventListener('resize', updateMaxItems)
+        return () => window.removeEventListener('resize', updateMaxItems)
+      }
+    }, [maxItemsSp, maxItemsPc])
 
     const displayedItems = items.slice(0, visibleCount)
 
@@ -82,8 +105,20 @@ const NewsList = forwardRef<HTMLDivElement, NewsListProps>(
       }
     }
 
+    // 表示制御用のヘルパー関数
+    const getCountSettings = () => {
+      if (maxItemsSp !== undefined && maxItemsPc !== undefined) {
+        const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
+        const initialCount = isMobile ? maxItemsSp : maxItemsPc
+        const addCount = isMobile ? 2 : 3
+        return { initialCount, addCount, maxCountAfterMore: initialCount + addCount }
+      }
+      return { initialCount: 6, addCount: 2, maxCountAfterMore: 8 }
+    }
+
     const handleShowMore = () => {
-      setVisibleCount(8)
+      const { addCount } = getCountSettings()
+      setVisibleCount((prev) => prev + addCount)
     }
 
     return (
@@ -134,32 +169,40 @@ const NewsList = forwardRef<HTMLDivElement, NewsListProps>(
           ))}
         </div>
 
-        {showMoreButton && visibleCount < 8 && visibleCount < items.length && (
-          <div ref={moreButtonRef} className={styles['more-button-wrapper']}>
-            <button
-              ref={moreButtonRefInternal}
-              onClick={handleShowMore}
-              className={`${styles['more-button']} ${isMoreButtonVisible ? styles.active : ''}`}
-            >
-              more
-            </button>
-          </div>
-        )}
+        {showMoreButton &&
+          (() => {
+            const { maxCountAfterMore } = getCountSettings()
+            return visibleCount < maxCountAfterMore && visibleCount < items.length
+          })() && (
+            <div ref={moreButtonRef} className={styles['more-button-wrapper']}>
+              <button
+                ref={moreButtonRefInternal}
+                onClick={handleShowMore}
+                className={`${styles['more-button']} ${isMoreButtonVisible ? styles.active : ''}`}
+              >
+                more
+              </button>
+            </div>
+          )}
 
-        {showViewAllButton && visibleCount >= 8 && (
-          <div ref={moreButtonRef} className={styles['more-button-wrapper']}>
-            <Link
-              href="/news"
-              className={styles['news-list-button']}
-              onClick={(e) => {
-                e.preventDefault()
-                setCurrentPage('news')
-              }}
-            >
-              すべて見る
-            </Link>
-          </div>
-        )}
+        {showViewAllButton &&
+          (() => {
+            const { maxCountAfterMore } = getCountSettings()
+            return visibleCount >= maxCountAfterMore
+          })() && (
+            <div ref={moreButtonRef} className={styles['more-button-wrapper']}>
+              <Link
+                href="/news"
+                className={styles['news-list-button']}
+                onClick={(e) => {
+                  e.preventDefault()
+                  setCurrentPage('news')
+                }}
+              >
+                すべて見る
+              </Link>
+            </div>
+          )}
       </div>
     )
   }

@@ -1037,7 +1037,8 @@ function HomeContent() {
                 <NewsList
                   ref={newsListRef}
                   items={newsItems}
-                  maxItems={4}
+                  maxItemsSp={4}
+                  maxItemsPc={6}
                   showMoreButton={true}
                   showViewAllButton={true}
                   moreButtonRef={newsMoreButtonRef}
