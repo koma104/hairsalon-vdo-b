@@ -169,7 +169,7 @@
   font-weight: var(--font-weight-regular);
   line-height: 1;
   margin-bottom: var(--spacing-xs);
-  opacity: 1; /* 全体を表示 */
+  opacity: 0; /* 初期状態は非表示にしてフラッシュを防ぐ */
   min-height: 1.2em; /* 空の状態でも高さを保持 */
 
   &:last-child {

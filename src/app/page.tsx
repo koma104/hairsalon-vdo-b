@@ -163,6 +163,11 @@ function HomeContent() {
           backgroundColor: 'transparent',
           color: 'white',
         })
+
+        // 文字分割完了後、親要素を表示
+        gsap.set(textElement, {
+          opacity: 1,
+        })
       })
 
       // タイトルアニメーション（下からスライドイン）
