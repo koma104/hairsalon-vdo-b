@@ -352,7 +352,7 @@
   margin-block-end: var(--spacing-sm);
   font-family: var(--font-playfair-italic);
   font-style: italic;
-  font-size: var(--font-lg);
+  font-size: var(--font-xl);
   font-weight: var(--font-weight-regular);
   text-align: left;
   letter-spacing: 0.01em;
