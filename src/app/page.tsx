@@ -535,13 +535,12 @@ function HomeContent() {
           opacity: 0,
         })
 
-        // ニュースタイトルのアニメーション
+        // ニュースタイトルのアニメーション（1度だけ実行）
         const newsTl = gsap.timeline({
           scrollTrigger: {
             trigger: newsSectionRef.current,
             start: 'top bottom-=200',
-            end: 'bottom top+=100',
-            toggleActions: 'play none none reverse',
+            once: true, // 1度だけ実行してreverseアニメーションを防ぐ
           },
         })
 
@@ -624,13 +623,12 @@ function HomeContent() {
             opacity: 0,
           })
 
-          // メニュータイトルのアニメーション
+          // メニュータイトルのアニメーション（1度だけ実行）
           const menuTl = gsap.timeline({
             scrollTrigger: {
               trigger: menuSectionRef.current,
               start: 'top bottom-=200',
-              end: 'bottom top+=100',
-              toggleActions: 'play none none reverse',
+              once: true, // 1度だけ実行
             },
           })
 

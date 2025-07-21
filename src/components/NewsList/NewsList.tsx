@@ -42,23 +42,14 @@ const NewsList = forwardRef<HTMLDivElement, NewsListProps>(
     const { setCurrentPage } = usePageContext()
     const moreButtonRefInternal = useRef<HTMLButtonElement>(null)
 
-    // Hydration後にクライアントサイドで正しい表示件数を設定
+    // 初期表示件数の設定（一度だけ）
     useEffect(() => {
       if (maxItemsSp !== undefined && maxItemsPc !== undefined) {
-        const updateMaxItems = () => {
-          const isMobile = window.innerWidth < 768
-          const newMaxItems = isMobile ? maxItemsSp : maxItemsPc
-          setVisibleCount(newMaxItems)
-        }
-
-        // 初回実行
-        updateMaxItems()
-
-        // リサイズ時にも実行
-        window.addEventListener('resize', updateMaxItems)
-        return () => window.removeEventListener('resize', updateMaxItems)
+        const isMobile = window.innerWidth < 768
+        const initialCount = isMobile ? maxItemsSp : maxItemsPc
+        setVisibleCount(initialCount)
       }
-    }, [maxItemsSp, maxItemsPc])
+    }, []) // 依存配列を空にして一度だけ実行
 
     const displayedItems = items.slice(0, visibleCount)
 
