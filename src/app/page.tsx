@@ -540,7 +540,8 @@ function HomeContent() {
           scrollTrigger: {
             trigger: newsSectionRef.current,
             start: 'top bottom-=200',
-            once: true, // 1度だけ実行してreverseアニメーションを防ぐ
+            end: 'bottom top+=100',
+            toggleActions: 'play none none reverse',
           },
         })
 
@@ -628,7 +629,8 @@ function HomeContent() {
             scrollTrigger: {
               trigger: menuSectionRef.current,
               start: 'top bottom-=200',
-              once: true, // 1度だけ実行
+              end: 'bottom top+=100',
+              toggleActions: 'play none none reverse',
             },
           })
 
