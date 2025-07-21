@@ -112,6 +112,7 @@ select {
 :root {
   --layout-max-width: 1280px;
   --container-max-width: calc(var(--spacing-4xl) * 10);
+  --content-max-width-narrow: 640px;
 }
 
 /* Next.jsのスクロール動作制御 */
