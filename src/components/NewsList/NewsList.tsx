@@ -44,15 +44,15 @@ const NewsList = forwardRef<HTMLDivElement, NewsListProps>(
       const moreButton = moreButtonRefInternal.current
       if (!moreButton) return
 
-      let hasTriggered = false // 一度だけ発火するフラグ
-
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
-            if (entry.isIntersecting && !hasTriggered) {
-              hasTriggered = true // 一度発火したらフラグを立てる
-              // 実機に最適化した即座の発火
-              setIsMoreButtonVisible(true) // 遅延なし
+            if (entry.isIntersecting) {
+              // 画面に入った時にアニメーション開始
+              setIsMoreButtonVisible(true)
+            } else {
+              // 画面から出た時にアニメーションリセット
+              setIsMoreButtonVisible(false)
             }
           })
         },
