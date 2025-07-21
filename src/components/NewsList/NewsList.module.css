@@ -75,6 +75,10 @@
 /* Grid layout用の画像 (ホームページ用) */
 .news-item-grid .news-image-wrapper {
   width: 100%;
+
+  @media (min-width: 768px) {
+    height: 10rem; /* PCグリッドレイアウト専用の高さ (7rem → 10rem) */
+  }
 }
 
 /* List layout用の画像 (ニュース一覧ページ用) */

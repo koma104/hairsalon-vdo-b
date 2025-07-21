@@ -762,52 +762,70 @@ function HomeContent() {
     }
   }, [])
 
-  // 動的行分割システム
+  // 動的行分割システム（PC/SPで切り替え）
   const createDynamicLineSplit = (): NodeListOf<Element> | null => {
     if (!conceptTextRef.current) return null
 
     const text = conceptTextRef.current.textContent || ''
     const element = conceptTextRef.current
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
 
     // 元のテキストに戻す
     element.innerHTML = text
 
-    // 一文字ずつスパンで包んで実際の行を検出
-    const chars = text.split('')
-    element.innerHTML = chars
-      .map(
-        (char, index) => `<span data-char-index="${index}">${char === ' ' ? '&nbsp;' : char}</span>`
-      )
-      .join('')
+    let lines: string[] = []
 
-    // 各文字の位置を取得して行を検出
-    const charSpans = element.querySelectorAll('[data-char-index]')
-    const lines: string[] = []
-    let currentLine = ''
-    let currentTop = -1
+    if (isMobile) {
+      // SP: 自然な改行（元のロジック）
+      const chars = text.split('')
+      element.innerHTML = chars
+        .map(
+          (char, index) =>
+            `<span data-char-index="${index}">${char === ' ' ? '&nbsp;' : char}</span>`
+        )
+        .join('')
 
-    charSpans.forEach((span, index) => {
-      const spanElement = span as HTMLElement
-      const rect = spanElement.getBoundingClientRect()
+      // 各文字の位置を取得して行を検出
+      const charSpans = element.querySelectorAll('[data-char-index]')
+      let currentLine = ''
+      let currentTop = -1
 
-      // 新しい行の開始を検出（Y座標が変わった時）
-      if (currentTop === -1) {
-        currentTop = Math.round(rect.top)
-      } else if (Math.round(rect.top) !== currentTop) {
-        // 新しい行に移った
-        if (currentLine.trim()) {
-          lines.push(currentLine.trim())
+      charSpans.forEach((span, index) => {
+        const spanElement = span as HTMLElement
+        const rect = spanElement.getBoundingClientRect()
+
+        // 新しい行の開始を検出（Y座標が変わった時）
+        if (currentTop === -1) {
+          currentTop = Math.round(rect.top)
+        } else if (Math.round(rect.top) !== currentTop) {
+          // 新しい行に移った
+          if (currentLine.trim()) {
+            lines.push(currentLine.trim())
+          }
+          currentLine = ''
+          currentTop = Math.round(rect.top)
         }
-        currentLine = ''
-        currentTop = Math.round(rect.top)
+
+        currentLine += chars[index]
+      })
+
+      // 最後の行を追加
+      if (currentLine.trim()) {
+        lines.push(currentLine.trim())
       }
-
-      currentLine += chars[index]
-    })
-
-    // 最後の行を追加
-    if (currentLine.trim()) {
-      lines.push(currentLine.trim())
+    } else {
+      // PC: 句点（。）で改行
+      lines = text
+        .split('。')
+        .map((line) => line.trim())
+        .filter((line) => line.length > 0)
+      // 最後の行以外に句点を復元
+      lines = lines.map((line, index) => {
+        if (index < lines.length - 1) {
+          return line + '。'
+        }
+        return line
+      })
     }
 
     // 検出した行でHTMLを再構築
