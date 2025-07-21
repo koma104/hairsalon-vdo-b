@@ -14,7 +14,7 @@
   position: relative;
   width: 100%;
   height: 100%;
-  padding: var(--spacing-2xl);
+  padding: var(--spacing-2xl) var(--spacing-4xl);
 
   @media (min-width: 768px) {
     padding: var(--spacing-4xl);

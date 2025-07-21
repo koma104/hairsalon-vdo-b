@@ -49,13 +49,13 @@ select {
   --color-gray-60-blend: #ccc;
   --color-black-blend: #ddd;
 
-  --color-footer-bg: #000;
+  --color-footer-bg: var(--color-gray-05);
   --color-sns: #282828;
   --color-base-bg: var(--color-gray-05);
   --color-nav-bg: var(--color-gray-10);
   --color-hover: var(--color-accent);
   --color-select: var(--color-gray-60);
-  --color-container-inline: var(--color-gray-20);
+  --color-container-inline: var(--color-gray-10);
 }
 
 /* スペーシング */

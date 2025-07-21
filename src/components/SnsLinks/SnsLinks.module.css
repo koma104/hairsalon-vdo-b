@@ -39,10 +39,10 @@
   justify-content: start;
 
   & a {
-    color: var(--color-white); /* フッター専用の色 */
+    color: var(--color-sns); /* フッター専用の色 */
 
     &:focus-visible {
-      color: var(--color-white);
+      color: var(--color-hover);
     }
 
     @media (any-hover: hover) {
