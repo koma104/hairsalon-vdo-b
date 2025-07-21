@@ -28,29 +28,30 @@
 
 .main-image-wrapper {
   margin-block-end: var(--spacing-xl);
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
 
-  /* PCではアスペクト比を調整 */
+  /* PCではより横長に調整 */
   @media (min-width: 768px) {
-    aspect-ratio: 16 / 9;
-    overflow: hidden;
+    aspect-ratio: 2 / 1;
   }
 }
 
 .main-image {
   width: 100%;
-  height: auto;
+  height: 100%;
   object-fit: cover;
 
-  /* PCではアスペクト比を固定して長方形にする */
+  /* SPでもPCでも横長比率を適用 */
+  aspect-ratio: 16 / 9;
+
   @media (min-width: 768px) {
-    aspect-ratio: 16 / 9;
-    height: auto;
-    object-fit: cover;
+    aspect-ratio: 2 / 1;
   }
 }
 
 .content {
-  font-size: var(--font-xs);
+  font-size: var(--font-sm);
   line-height: 2;
 
   & p:not(:last-child) {

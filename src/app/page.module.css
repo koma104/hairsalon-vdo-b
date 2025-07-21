@@ -1,6 +1,10 @@
 /* セクションタイトルのラッパー */
 .section-title-wrapper {
   margin-block-end: var(--spacing-2xl);
+
+  @media (min-width: 768px) {
+    margin-block-end: var(--spacing-3xl);
+  }
 }
 
 /* メインビジュアル */
@@ -335,6 +339,11 @@
   grid-auto-flow: row;
   gap: var(--spacing-2xl);
   margin-block-end: var(--spacing-4xl);
+
+  @media (min-width: 768px) {
+    width: var(--content-max-width-narrow);
+    margin-inline: auto;
+  }
 }
 
 .menu-subtitle {
@@ -353,10 +362,6 @@
   gap: var(--spacing-xs);
   list-style: none;
   padding-inline: var(--spacing-sm);
-
-  @media (min-width: 768px) {
-    padding-inline: var(--spacing-xl);
-  }
 }
 
 .menu-item {

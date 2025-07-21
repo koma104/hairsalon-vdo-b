@@ -6,6 +6,7 @@
   @media (min-width: 768px) {
     margin-inline: auto;
     padding-inline: var(--spacing-2xl);
+    padding-block: calc(var(--spacing-4xl) * 1.5) var(--spacing-3xl);
     max-width: var(--container-max-width);
   }
 }

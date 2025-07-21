@@ -1,10 +1,6 @@
 .time-selector {
   width: 100%;
   overflow: hidden;
-
-  @media (min-width: 768px) {
-    padding-inline: var(--spacing-2xl);
-  }
 }
 
 .tabs {

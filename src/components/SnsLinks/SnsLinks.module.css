@@ -1,7 +1,7 @@
 .sns-links {
   display: grid;
   grid-auto-flow: column;
-  justify-content: start;
+  justify-content: center; /* SPナビでは中央寄せ */
   gap: var(--spacing-xl);
 
   @media (min-width: 768px) {
@@ -26,6 +26,15 @@
 
   & svg {
     vertical-align: middle;
+  }
+}
+
+/* フッター用のスタイル */
+.sns-links-footer {
+  justify-content: start; /* フッターでは左寄せ */
+
+  @media (min-width: 768px) {
+    justify-content: end; /* PCフッターでは右寄せ */
   }
 }
 

@@ -24,7 +24,7 @@
   position: relative;
 
   @media (min-width: 768px) {
-    width: 9rem;
+    width: 12rem; /* 9rem → 12rem (192px) */
   }
 }
 
