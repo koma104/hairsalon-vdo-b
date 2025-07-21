@@ -34,8 +34,9 @@
   font-size: inherit;
   overflow: hidden;
   /* アニメーション用の初期状態（JSで上書きされる） */
-  transform: translateY(50px);
-  opacity: 0;
+  /* ホームページでのみアニメーション適用、ニュース一覧ページでは即座に表示 */
+  transform: translateY(0);
+  opacity: 1;
 
   @media (min-width: 768px) {
     gap: var(--spacing-md);

@@ -52,20 +52,37 @@ const NewsList = forwardRef<HTMLDivElement, NewsListProps>(
         const initialCount = isMobile ? maxItemsSp : maxItemsPc
         setVisibleCount(initialCount)
 
-        // 初期要素をアニメーション済み状態にする
-        setTimeout(() => {
-          if (ref && typeof ref === 'object' && ref.current) {
-            const newsItems = ref.current.querySelectorAll('button[class*="news-item"]')
-            if (newsItems.length > 0) {
-              gsap.set(newsItems, {
-                y: 0,
-                opacity: 1,
-              })
+        // ホームページでのみアニメーション初期状態を設定
+        // ニュース一覧ページでは即座に表示
+        if (scrollTriggerRef) {
+          // ホームページの場合：アニメーション用の初期状態を設定
+          setTimeout(() => {
+            if (ref && typeof ref === 'object' && ref.current) {
+              const newsItems = ref.current.querySelectorAll('button[class*="news-item"]')
+              if (newsItems.length > 0) {
+                gsap.set(newsItems, {
+                  y: 50,
+                  opacity: 0,
+                })
+              }
             }
-          }
-        }, 100)
+          }, 100)
+        } else {
+          // ニュース一覧ページの場合：即座に表示
+          setTimeout(() => {
+            if (ref && typeof ref === 'object' && ref.current) {
+              const newsItems = ref.current.querySelectorAll('button[class*="news-item"]')
+              if (newsItems.length > 0) {
+                gsap.set(newsItems, {
+                  y: 0,
+                  opacity: 1,
+                })
+              }
+            }
+          }, 100)
+        }
       }
-    }, []) // 依存配列を空にして一度だけ実行
+    }, [scrollTriggerRef]) // scrollTriggerRefを依存配列に追加
 
     const displayedItems = items.slice(0, visibleCount)
 
@@ -137,14 +154,14 @@ const NewsList = forwardRef<HTMLDivElement, NewsListProps>(
           const newItems = Array.from(newsItems).slice(visibleCount, newCount)
 
           if (newItems.length > 0) {
-            // 初期状態を設定（既に非表示になっているはずだが念のため）
-            gsap.set(newItems, {
-              y: 50,
-              opacity: 0,
-            })
-
-            // ScrollTriggerが利用可能な場合は、新しい要素をScrollTriggerに追加
             if (scrollTriggerRef?.current) {
+              // ホームページの場合：アニメーション適用
+              // 初期状態を設定
+              gsap.set(newItems, {
+                y: 50,
+                opacity: 0,
+              })
+
               // ScrollTriggerを再実行して新しい要素も含める
               scrollTriggerRef.current.refresh()
 
@@ -159,15 +176,10 @@ const NewsList = forwardRef<HTMLDivElement, NewsListProps>(
                 })
               })
             } else {
-              // ScrollTriggerが利用できない場合は直接アニメーション
-              newItems.forEach((item, index) => {
-                gsap.to(item, {
-                  y: 0,
-                  opacity: 1,
-                  duration: 0.6,
-                  ease: 'power2.out',
-                  delay: index * 0.1, // 0.1秒ずつ遅延
-                })
+              // ニュース一覧ページの場合：即座に表示
+              gsap.set(newItems, {
+                y: 0,
+                opacity: 1,
               })
             }
           }
