@@ -109,15 +109,15 @@ const NewsList = forwardRef<HTMLDivElement, NewsListProps>(
                     />
                   </div>
                   <div className={styles['news-text']}>
-                    <h3 className={styles['news-subtitle']}>{item.title}</h3>
-                    <p className={styles['news-excerpt']}>{item.excerpt}</p>
+                    <h3 className={styles['news-title']}>{item.title}</h3>
+                    <p className={styles['news-date']}>{item.date}</p>
                   </div>
                 </>
               ) : (
                 <>
                   <div className={styles['news-text']}>
-                    <h3 className={styles['news-subtitle']}>{item.title}</h3>
-                    <p className={styles['news-excerpt']}>{item.excerpt}</p>
+                    <h3 className={styles['news-title']}>{item.title}</h3>
+                    <p className={styles['news-date']}>{item.date}</p>
                   </div>
                   <div className={styles['news-image-wrapper']}>
                     <Image

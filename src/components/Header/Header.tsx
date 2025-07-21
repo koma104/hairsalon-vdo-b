@@ -3,7 +3,7 @@
 import React, { useState, useEffect, Suspense } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import Nav from '../Nav/Nav'
 import styles from './Header.module.css'
 import { usePageContext } from '@/contexts/PageContext'
@@ -14,10 +14,35 @@ function HeaderContent() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isClient, setIsClient] = useState(false)
   const searchParams = useSearchParams()
+  const router = useRouter()
+  const pathname = usePathname()
   const { currentPage, setCurrentPage } = usePageContext()
-  const isHomePage = currentPage === 'home'
+
+  // 独立ページかどうかを判断（/news/[id]、/reserve、/staffなど）
+  const isStandalonePage = pathname !== '/' && !pathname.startsWith('/?')
+  const isHomePage = !isStandalonePage && currentPage === 'home'
 
   const hasNewsParam = searchParams.get('news') !== null
+
+  // ナビゲーション処理
+  const handleNavigation = (targetPage: string, href: string) => {
+    if (isStandalonePage) {
+      // 独立ページからの遷移は直接URLナビゲーション
+      if (targetPage === 'home') {
+        window.location.href = '/'
+      } else {
+        router.push(href)
+      }
+    } else {
+      // ホームページ内での遷移はPageContextを使用
+      if (targetPage === 'home') {
+        setCurrentPage('home')
+        window.location.replace('/')
+      } else {
+        setCurrentPage(targetPage as 'home' | 'news' | 'reserve' | 'staff')
+      }
+    }
+  }
 
   useEffect(() => {
     // クライアントサイドであることを確認
@@ -124,8 +149,7 @@ function HeaderContent() {
                 href="/"
                 onClick={(e) => {
                   e.preventDefault()
-                  setCurrentPage('home')
-                  window.location.replace('/')
+                  handleNavigation('home', '/')
                 }}
               >
                 home
@@ -136,7 +160,7 @@ function HeaderContent() {
                 href="/news"
                 onClick={(e) => {
                   e.preventDefault()
-                  setCurrentPage('news')
+                  handleNavigation('news', '/news')
                 }}
               >
                 news
@@ -147,7 +171,7 @@ function HeaderContent() {
                 href="/reserve"
                 onClick={(e) => {
                   e.preventDefault()
-                  setCurrentPage('reserve')
+                  handleNavigation('reserve', '/reserve')
                 }}
               >
                 reserve
@@ -158,7 +182,7 @@ function HeaderContent() {
                 href="/staff"
                 onClick={(e) => {
                   e.preventDefault()
-                  setCurrentPage('staff')
+                  handleNavigation('staff', '/staff')
                 }}
               >
                 staff

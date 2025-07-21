@@ -8,7 +8,7 @@ import SectionTitle from '@/components/SectionTitle/SectionTitle'
 import Container from '@/components/Container/Container'
 import NewsList from '@/components/NewsList/NewsList'
 
-const ITEMS_PER_PAGE = 10
+const ITEMS_PER_PAGE = 20
 
 // useSearchParamsを使用するコンポーネントを分離
 const NewsListContent = () => {

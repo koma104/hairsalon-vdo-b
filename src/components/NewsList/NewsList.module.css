@@ -90,32 +90,24 @@
 .news-text {
   display: grid;
   grid-auto-flow: row;
-  gap: var(--spacing-xs);
+  gap: var(--spacing-xxs);
   align-content: start;
 }
 
-.news-subtitle {
-  font-size: var(--font-md);
+.news-title {
+  font-size: var(--font-sm);
   font-weight: var(--font-weight-regular);
   letter-spacing: 0.01em;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-
-  @media (min-width: 768px) {
-    font-size: var(--font-lg);
-  }
 }
 
-.news-excerpt {
-  font-size: var(--font-xs);
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.news-date {
+  font-size: var(--font-xxs);
+  color: var(--color-gray-30);
 }
 
 .more-button-wrapper {
