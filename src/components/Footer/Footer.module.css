@@ -43,11 +43,9 @@
 
 .info {
   display: grid;
-  gap: var(--spacing-sm);
   margin-block-end: var(--spacing-sm);
 
   @media (min-width: 768px) {
-    gap: var(--spacing-xs);
     margin-block-end: 0;
   }
 
