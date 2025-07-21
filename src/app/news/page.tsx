@@ -194,7 +194,9 @@ const NewsListLoading = () => (
 const NewsListPage = () => {
   return (
     <Container>
-      <SectionTitle>news</SectionTitle>
+      <div className={styles['section-title-wrapper']}>
+        <SectionTitle disableAnimation={true}>news</SectionTitle>
+      </div>
       <Suspense fallback={<NewsListLoading />}>
         <NewsListContent />
       </Suspense>

@@ -1,3 +1,8 @@
+/* セクションタイトルのラッパー */
+.section-title-wrapper {
+  margin-block-end: var(--spacing-2xl);
+}
+
 .staff-list {
   display: grid;
   grid-auto-flow: row;

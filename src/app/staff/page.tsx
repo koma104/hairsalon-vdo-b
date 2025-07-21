@@ -46,8 +46,10 @@ const StaffPage = () => {
             const image = staffCard.querySelector(`.${styles['staff-image']}`) as HTMLImageElement
             const nameElement = staffCard.querySelector(`.${styles['staff-name']}`) as HTMLElement
             const titleElement = staffCard.querySelector(`.${styles['staff-title']}`) as HTMLElement
-            const specialtyElement = staffCard.querySelector(`.${styles['staff-specialty']}`) as HTMLElement
-            
+            const specialtyElement = staffCard.querySelector(
+              `.${styles['staff-specialty']}`
+            ) as HTMLElement
+
             // 画像アニメーション（最初に開始）
             if (image) {
               image.classList.add(styles.animate)
@@ -76,7 +78,7 @@ const StaffPage = () => {
       },
       {
         threshold: 0.3,
-        rootMargin: '0px 0px -50px 0px'
+        rootMargin: '0px 0px -50px 0px',
       }
     )
 
@@ -91,11 +93,13 @@ const StaffPage = () => {
 
   return (
     <Container>
-      <SectionTitle>Staff</SectionTitle>
+      <div className={styles['section-title-wrapper']}>
+        <SectionTitle disableAnimation={true}>Staff</SectionTitle>
+      </div>
       <div className={styles['staff-list']}>
         {staffMembers.map((staff, index) => (
-          <div 
-            key={index} 
+          <div
+            key={index}
             className={styles['staff-card']}
             ref={(el) => {
               staffRefs.current[index] = el

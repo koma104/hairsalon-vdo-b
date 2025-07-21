@@ -17,7 +17,9 @@ const ReservePage = () => {
 
   return (
     <Container>
-      <SectionTitle>reserve</SectionTitle>
+      <div className={styles['section-title-wrapper']}>
+        <SectionTitle disableAnimation={true}>reserve</SectionTitle>
+      </div>
 
       <section>
         <div className={styles['reserve-wrapper']}>
@@ -37,7 +39,7 @@ const ReservePage = () => {
               options={[
                 { value: 'cut', label: 'Cut' },
                 { value: 'color', label: 'Color' },
-                { value: 'treatment', label: 'Treatment' }
+                { value: 'treatment', label: 'Treatment' },
               ]}
               value={selectedService}
               onChange={setSelectedService}
@@ -56,7 +58,7 @@ const ReservePage = () => {
               options={[
                 { value: 'tanaka', label: 'Akari Tanaka' },
                 { value: 'yamamoto', label: 'Sakura Yamamoto' },
-                { value: 'nakamura', label: 'Kenji Nakamura' }
+                { value: 'nakamura', label: 'Kenji Nakamura' },
               ]}
               value={selectedStylist}
               onChange={setSelectedStylist}

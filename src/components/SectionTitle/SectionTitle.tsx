@@ -5,10 +5,11 @@ import styles from './SectionTitle.module.css'
 interface SectionTitleProps {
   children: React.ReactNode
   tag?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
+  disableAnimation?: boolean
 }
 
 const SectionTitle = forwardRef<HTMLHeadingElement, SectionTitleProps>(
-  ({ children, tag: Tag = 'h1' }, ref) => {
+  ({ children, tag: Tag = 'h1', disableAnimation = false }, ref) => {
     const internalRef = useRef<HTMLHeadingElement>(null)
 
     // 外部refに内部refを転送
@@ -21,6 +22,14 @@ const SectionTitle = forwardRef<HTMLHeadingElement, SectionTitleProps>(
       // spanを取得
       const span = element.querySelector('span')
       if (!span) return
+
+      // アニメーション無効の場合は初期状態で表示
+      if (disableAnimation) {
+        gsap.set(span, {
+          y: '0%',
+        })
+        return
+      }
 
       // 初期状態: spanを下に隠す（main-titleと同じ）
       gsap.set(span, {
@@ -54,7 +63,7 @@ const SectionTitle = forwardRef<HTMLHeadingElement, SectionTitleProps>(
           scrollTrigger.kill()
         }
       }
-    }, [])
+    }, [disableAnimation])
 
     return (
       <Tag ref={internalRef} className={styles['section-title']}>
