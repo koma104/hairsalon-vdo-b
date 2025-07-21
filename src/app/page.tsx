@@ -988,36 +988,43 @@ function HomeContent() {
                   src: '/images/prx-image-01.jpg',
                   alt: 'Photo 1',
                   speed: '1.2',
+                  speedPc: '1.4',
                 },
                 {
                   src: '/images/prx-image-02.jpg',
                   alt: 'Photo 2',
                   speed: '0.8',
+                  speedPc: '0.6',
                 },
                 {
                   src: '/images/prx-image-03.jpg',
                   alt: 'Photo 3',
                   speed: '1.1',
+                  speedPc: '1.3',
                 },
                 {
                   src: '/images/prx-image-04.jpg',
                   alt: 'Photo 4',
                   speed: '0.9',
+                  speedPc: '0.7',
                 },
                 {
                   src: '/images/prx-image-05.jpg',
                   alt: 'Photo 5',
                   speed: '0.9',
+                  speedPc: '0.8',
                 },
                 {
                   src: '/images/prx-image-06.jpg',
                   alt: 'Photo 6',
                   speed: '1.1',
+                  speedPc: '1.2',
                 },
                 {
                   src: '/images/prx-image-07.jpg',
                   alt: 'Photo 7',
                   speed: '0.9',
+                  speedPc: '0.9',
                 },
               ]}
             />
