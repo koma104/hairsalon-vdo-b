@@ -55,23 +55,23 @@ const StaffPage = () => {
               image.classList.add(styles.animate)
             }
 
-            // テキストアニメーション（画像の後に少し遅れて開始）
+            // テキストアニメーション（画像アニメーション完了後に開始）
             if (nameElement) {
               setTimeout(() => {
                 nameElement.classList.add(styles.animate)
-              }, 200)
+              }, 800) // 画像アニメーション完了後
             }
 
             if (titleElement) {
               setTimeout(() => {
                 titleElement.classList.add(styles.animate)
-              }, 300)
+              }, 900) // 名前の後に100ms遅延
             }
 
             if (specialtyElement) {
               setTimeout(() => {
                 specialtyElement.classList.add(styles.animate)
-              }, 400)
+              }, 1000) // タイトルの後に100ms遅延
             }
           }
         })
