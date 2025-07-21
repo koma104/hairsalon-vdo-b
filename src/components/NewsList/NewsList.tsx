@@ -101,10 +101,10 @@ const NewsList = forwardRef<HTMLDivElement, NewsListProps>(
       if (maxItemsSp !== undefined && maxItemsPc !== undefined) {
         const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
         const initialCount = isMobile ? maxItemsSp : maxItemsPc
-        const addCount = isMobile ? 2 : 3
+        const addCount = isMobile ? 4 : 6 // SP: 4件、PC: 6件追加
         return { initialCount, addCount, maxCountAfterMore: initialCount + addCount }
       }
-      return { initialCount: 6, addCount: 2, maxCountAfterMore: 8 }
+      return { initialCount: 6, addCount: 4, maxCountAfterMore: 10 }
     }
 
     const handleShowMore = () => {
