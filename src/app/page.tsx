@@ -85,6 +85,7 @@ function HomeContent() {
   // メニューセクション用のref
   const menuSectionRef = useRef<HTMLElement>(null)
   const menuWrapperRef = useRef<HTMLDivElement>(null)
+  const menuAnimationExecutedRef = useRef(false) // メニューアニメーション実行フラグ
 
   // タイプライターアニメーション用のref
   const typewriterContainerRef = useRef<HTMLDivElement>(null)
@@ -597,6 +598,9 @@ function HomeContent() {
       // メニューセクションのアニメーション
       if (menuSectionRef.current && menuWrapperRef.current) {
         const initializeMenuAnimations = async () => {
+          // 既に実行済みの場合はスキップ
+          if (menuAnimationExecutedRef.current) return
+          
           // フォント読み込み完了を待つ
           await document.fonts.ready
 
@@ -650,7 +654,7 @@ function HomeContent() {
               trigger: menuSectionRef.current,
               start: 'top bottom-=200',
               end: 'bottom top+=100',
-              toggleActions: 'play none none reverse',
+              once: true, // 1回だけ実行
             },
           })
 
@@ -727,6 +731,9 @@ function HomeContent() {
 
           // メニューラッパー表示後にタイプライター開始
           menuTl.call(animateMenuTypewriter, [], 0.3)
+          
+          // アニメーション実行フラグを設定
+          menuAnimationExecutedRef.current = true
         }
 
         // async関数を実行
