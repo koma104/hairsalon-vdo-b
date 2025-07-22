@@ -1046,8 +1046,8 @@ function HomeContent() {
                 {
                   src: '/images/prx-image-01.jpg',
                   alt: 'Photo 1',
-                  speed: '1.2',
-                  speedPc: '1.4',
+                  speed: '1.1',
+                  speedPc: '1.3',
                 },
                 {
                   src: '/images/prx-image-02.jpg',
