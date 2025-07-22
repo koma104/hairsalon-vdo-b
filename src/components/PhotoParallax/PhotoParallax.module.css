@@ -43,7 +43,7 @@
 
   /* 写真配置 - 4:3比率で統一 */
   &:nth-child(1) {
-    top: 5%;
+    top: 10%;
     left: 0;
     width: var(--w4);
     height: var(--w3);
@@ -58,14 +58,14 @@
   }
 
   &:nth-child(2) {
-    top: 11%;
-    right: 5%;
-    width: calc(var(--w3) * 1.2);
-    height: calc(var(--w4) * 1.2);
+    top: 15%;
+    right: 3%;
+    width: calc(var(--w3) * 1.3);
+    height: calc(var(--w4) * 1.3);
     z-index: 1;
 
     @media (min-width: 768px) {
-      top: 12%;
+      top: 14%;
       right: 18%;
       width: calc(var(--w3) * 1.5);
       height: calc(var(--w4) * 1.5);
@@ -73,10 +73,10 @@
   }
 
   &:nth-child(3) {
-    top: 40%;
-    right: 42%;
-    width: calc(var(--w3) * 0.8);
-    height: calc(var(--w4) * 0.8);
+    top: 36%;
+    right: 36%;
+    width: calc(var(--w3) * 0.9);
+    height: calc(var(--w4) * 0.9);
     z-index: 4;
 
     @media (min-width: 768px) {
@@ -86,10 +86,10 @@
   }
 
   &:nth-child(4) {
-    bottom: 8%;
+    bottom: 13%;
     right: 14%;
-    width: calc(var(--w4) * 0.8);
-    height: calc(var(--w3) * 0.8);
+    width: calc(var(--w4) * 0.9);
+    height: calc(var(--w3) * 0.9);
     z-index: 2;
 
     @media (min-width: 768px) {
@@ -99,10 +99,10 @@
   }
 
   &:nth-child(5) {
-    top: 24%;
-    left: 8%;
-    width: calc(var(--w4) * 0.8);
-    height: calc(var(--w3) * 0.8);
+    top: 33%;
+    left: 7%;
+    width: calc(var(--w4) * 0.7);
+    height: calc(var(--w3) * 0.7);
     z-index: 5;
 
     @media (min-width: 768px) {
@@ -112,10 +112,10 @@
   }
 
   &:nth-child(6) {
-    top: 52%;
+    top: 50%;
     right: 0%;
-    width: calc(var(--w3) * 0.8);
-    height: calc(var(--w4) * 0.8);
+    width: calc(var(--w3) * 0.9);
+    height: calc(var(--w4) * 0.9);
     z-index: 1;
 
     @media (min-width: 768px) {
@@ -127,7 +127,7 @@
   }
 
   &:nth-child(7) {
-    bottom: 10%;
+    bottom: 20%;
     left: 3%;
     width: var(--w3);
     height: var(--w4);
