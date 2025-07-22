@@ -40,7 +40,7 @@ const NewsList = forwardRef<HTMLDivElement, NewsListProps>(
   ) => {
     // 初期値はSSR/CSR共通にするため、maxItemsまたはデフォルト値を使用
     const [visibleCount, setVisibleCount] = useState(maxItems || maxItemsSp || 6)
-    const [isMoreButtonVisible, setIsMoreButtonVisible] = useState(false)
+
     const router = useRouter()
     const { setCurrentPage } = usePageContext()
     const moreButtonRefInternal = useRef<HTMLButtonElement>(null)
@@ -91,29 +91,8 @@ const NewsList = forwardRef<HTMLDivElement, NewsListProps>(
       const moreButton = moreButtonRefInternal.current
       if (!moreButton) return
 
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              // 画面に入った時にアニメーション開始
-              setIsMoreButtonVisible(true)
-            } else {
-              // 画面から出た時にアニメーションリセット
-              setIsMoreButtonVisible(false)
-            }
-          })
-        },
-        {
-          threshold: 0.1, // 10%で発火
-          rootMargin: '0px 0px -200px 0px',
-        }
-      )
-
-      observer.observe(moreButton)
-
-      return () => {
-        observer.disconnect()
-      }
+      // IntersectionObserverを削除（アニメーション不要のため）
+      return () => {}
     }, [])
 
     const handleItemClick = (item: NewsItem) => {
@@ -244,7 +223,7 @@ const NewsList = forwardRef<HTMLDivElement, NewsListProps>(
               <button
                 ref={moreButtonRefInternal}
                 onClick={handleShowMore}
-                className={`${styles['more-button']} ${isMoreButtonVisible ? styles.active : ''}`}
+                className={styles['more-button']}
               >
                 more
               </button>
