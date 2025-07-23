@@ -600,7 +600,7 @@ function HomeContent() {
         const initializeMenuAnimations = async () => {
           // 既に実行済みの場合はスキップ
           if (menuAnimationExecutedRef.current) return
-          
+
           // フォント読み込み完了を待つ
           await document.fonts.ready
 
@@ -731,7 +731,7 @@ function HomeContent() {
 
           // メニューラッパー表示後にタイプライター開始
           menuTl.call(animateMenuTypewriter, [], 0.3)
-          
+
           // アニメーション実行フラグを設定
           menuAnimationExecutedRef.current = true
         }
@@ -860,12 +860,9 @@ function HomeContent() {
         .split('。')
         .map((line) => line.trim())
         .filter((line) => line.length > 0)
-      // 最後の行以外に句点を復元
-      lines = lines.map((line, index) => {
-        if (index < lines.length - 1) {
-          return line + '。'
-        }
-        return line
+      // 全ての行に句点を復元
+      lines = lines.map((line) => {
+        return line + '。'
       })
     }
 
