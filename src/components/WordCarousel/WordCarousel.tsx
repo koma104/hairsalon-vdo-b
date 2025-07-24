@@ -99,19 +99,33 @@ const WordCarousel = ({ words, interval = 3000, className = '', initialDelay = 0
 
   const nextIndex = (currentIndex + 1) % words.length
 
+  const renderWord = (word: string) => {
+    // 文字列を分割して後半部分にspanを追加
+    if (word === 'Transforms Life') {
+      return <>Transforms <span className={styles['accent-word']}>Life</span></>
+    } else if (word === 'Gives Power') {
+      return <>Gives <span className={styles['accent-word']}>Power</span></>
+    } else if (word === 'Meets You') {
+      return <>Meets <span className={styles['accent-word']}>You</span></>
+    } else if (word === 'Creates Beauty') {
+      return <>Creates <span className={styles['accent-word']}>Beauty</span></>
+    }
+    return word
+  }
+
   return (
     <div className={styles.container}>
       <span 
         ref={currentWordRef} 
         className={`${styles.word} ${styles.current} ${className}`}
       >
-        {words[currentIndex]}
+        {renderWord(words[currentIndex])}
       </span>
       <span 
         ref={nextWordRef} 
         className={`${styles.word} ${styles.next} ${className}`}
       >
-        {words[nextIndex]}
+        {renderWord(words[nextIndex])}
       </span>
     </div>
   )
