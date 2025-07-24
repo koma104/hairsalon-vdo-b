@@ -1,0 +1,29 @@
+.container {
+  position: relative;
+  display: inline-block;
+  width: calc(100vw - 2 * var(--spacing-lg));
+
+  @media (min-width: 768px) {
+    width: calc(100vw - 10vw);
+  }
+}
+
+.word {
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 1;
+  transform: translateY(0);
+  white-space: nowrap;
+  transition: none;
+}
+
+.current {
+  position: relative;
+}
+
+.next {
+  opacity: 0;
+  transform: translateY(50px);
+}

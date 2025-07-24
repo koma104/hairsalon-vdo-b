@@ -16,6 +16,7 @@ import ReservePage from './reserve/page'
 import StaffPage from './staff/page'
 import NewsList from '@/components/NewsList/NewsList'
 import Container from '@/components/Container/Container'
+import WordCarousel from '@/components/WordCarousel/WordCarousel'
 import { usePageContext } from '@/contexts/PageContext'
 
 // ヒーロー画像の配列
@@ -274,18 +275,8 @@ function HomeContent() {
     // ページ遷移時にスクロール位置をトップにリセット
     window.scrollTo(0, 0)
 
-    console.log('🔍 pathname:', pathname)
-    console.log('🔍 currentPage:', currentPage)
-    console.log('🔍 Body height before:', document.body?.style.height)
-
     if (currentPage !== 'home' && document.body) {
-      console.log('🔧 ホームページ以外なのでbody heightをクリアします')
-
       // より強力なbody heightのクリア
-      console.log('🔧 Before - computed height:', window.getComputedStyle(document.body).height)
-      console.log('🔧 Before - style height:', document.body.style.height)
-
-      // 複数の方法でクリア
       document.body.style.height = ''
       document.body.style.minHeight = ''
       document.body.style.maxHeight = ''
@@ -294,9 +285,6 @@ function HomeContent() {
       // 強制的に再計算
       document.body.style.height = 'auto'
       document.body.style.minHeight = 'auto'
-
-      console.log('🔧 After - computed height:', window.getComputedStyle(document.body).height)
-      console.log('🔧 After - style height:', document.body.style.height)
 
       // ScrollSmootherもクリーンアップ
       const windowWithGSAP = window as typeof window & {
@@ -310,7 +298,6 @@ function HomeContent() {
           'kill' in smoother &&
           typeof smoother.kill === 'function'
         ) {
-          console.log('🔧 ScrollSmootherをkillしました')
           smoother.kill()
         }
       })
@@ -994,7 +981,11 @@ function HomeContent() {
                   <span>Where Style</span>
                 </div>
                 <div className={styles['title-line']}>
-                  <span>Meets You</span>
+                  <WordCarousel 
+                    words={['Meets You', 'Creates Beauty', 'Transforms Life', 'Gives Power']}
+                    interval={6000}
+                    initialDelay={4000}
+                  />
                 </div>
               </h2>
               {typewriterText.map((text, index) => (
