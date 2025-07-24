@@ -86,12 +86,12 @@ const WordCarousel = ({ words, interval = 3000, className = '', initialDelay = 0
 
     tl.to(currentWordRef.current, {
       y: -50,
-      duration: 0.6,
+      duration: 0.5,
       ease: 'power1.out'
     }, 0)
     .to(nextWordRef.current, {
       y: 0,
-      duration: 0.6,
+      duration: 0.5,
       ease: 'power1.out'
     }, 0)
 
