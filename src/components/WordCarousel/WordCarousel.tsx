@@ -11,7 +11,12 @@ interface WordCarouselProps {
   initialDelay?: number // 初期遅延を追加
 }
 
-const WordCarousel = ({ words, interval = 3000, className = '', initialDelay = 0 }: WordCarouselProps) => {
+const WordCarousel = ({
+  words,
+  interval = 3000,
+  className = '',
+  initialDelay = 0,
+}: WordCarouselProps) => {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isAnimating, setIsAnimating] = useState(false)
   const [isStarted, setIsStarted] = useState(false) // 開始フラグを追加
@@ -46,7 +51,7 @@ const WordCarousel = ({ words, interval = 3000, className = '', initialDelay = 0
     if (nextWordRef.current) {
       gsap.set(nextWordRef.current, {
         y: 50,
-        opacity: 0
+        opacity: 0,
       })
     }
   }, [])
@@ -59,7 +64,7 @@ const WordCarousel = ({ words, interval = 3000, className = '', initialDelay = 0
     // 次の文字を下に配置（初期状態）
     gsap.set(nextWordRef.current, {
       y: 50,
-      opacity: 1
+      opacity: 1,
     })
 
     // 同時アニメーション：現在の文字が上に消え、次の文字が下から現れる
@@ -73,62 +78,90 @@ const WordCarousel = ({ words, interval = 3000, className = '', initialDelay = 0
         setTimeout(() => {
           if (currentWordRef.current && nextWordRef.current) {
             gsap.set(currentWordRef.current, {
-              y: 0
+              y: 0,
             })
             gsap.set(nextWordRef.current, {
               y: 50,
-              opacity: 0
+              opacity: 0,
             })
           }
         }, 10)
-      }
+      },
     })
 
-    tl.to(currentWordRef.current, {
-      y: -50,
-      duration: 0.5,
-      ease: 'power1.out'
-    }, 0)
-    .to(nextWordRef.current, {
-      y: 0,
-      duration: 0.5,
-      ease: 'power1.out'
-    }, 0)
-
+    tl.to(
+      currentWordRef.current,
+      {
+        y: -50,
+        duration: 0.5,
+        ease: 'power1.out',
+      },
+      0
+    ).to(
+      nextWordRef.current,
+      {
+        y: 0,
+        duration: 0.5,
+        ease: 'power1.out',
+      },
+      0
+    )
   }, [isAnimating, currentIndex, words.length])
 
   const nextIndex = (currentIndex + 1) % words.length
 
   const renderWord = (word: string) => {
     // 文字列を分割して後半部分にspanを追加
-    if (word === 'Transforms Life') {
-      return <>Transforms <span className={styles['accent-word']}>Life</span></>
-    } else if (word === 'Gives Power') {
-      return <>Gives <span className={styles['accent-word']}>Power</span></>
+    if (word === 'Makes Dreams') {
+      return (
+        <>
+          Makes{' '}
+          <span className={styles['accent-word']} style={{ fontFamily: 'var(--font-playfair)' }}>
+            Dreams
+          </span>
+        </>
+      )
+    } else if (word === 'Gives Love') {
+      return (
+        <>
+          Gives{' '}
+          <span className={styles['accent-word']} style={{ fontFamily: 'var(--font-playfair)' }}>
+            Love
+          </span>
+        </>
+      )
     } else if (word === 'Meets You') {
-      return <>Meets <span className={styles['accent-word']}>You</span></>
-    } else if (word === 'Creates Beauty') {
-      return <>Creates <span className={styles['accent-word']}>Beauty</span></>
+      return (
+        <>
+          Meets{' '}
+          <span className={styles['accent-word']} style={{ fontFamily: 'var(--font-playfair)' }}>
+            You
+          </span>
+        </>
+      )
+    } else if (word === 'Brings Beauty') {
+      return (
+        <>
+          Brings{' '}
+          <span className={styles['accent-word']} style={{ fontFamily: 'var(--font-playfair)' }}>
+            Beauty
+          </span>
+        </>
+      )
     }
     return word
   }
 
   return (
     <div className={styles.container}>
-      <span 
-        ref={currentWordRef} 
-        className={`${styles.word} ${styles.current} ${className}`}
-      >
+      <span ref={currentWordRef} className={`${styles.word} ${styles.current} ${className}`}>
         {renderWord(words[currentIndex])}
       </span>
-      <span 
-        ref={nextWordRef} 
-        className={`${styles.word} ${styles.next} ${className}`}
-      >
+      <span ref={nextWordRef} className={`${styles.word} ${styles.next} ${className}`}>
         {renderWord(words[nextIndex])}
       </span>
     </div>
   )
 }
 
-export default WordCarousel 
+export default WordCarousel

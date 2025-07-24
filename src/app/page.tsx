@@ -981,8 +981,8 @@ function HomeContent() {
                   <span>Where Style</span>
                 </div>
                 <div className={styles['title-line']}>
-                  <WordCarousel 
-                    words={['Meets You', 'Creates Beauty', 'Transforms Life', 'Gives Power']}
+                  <WordCarousel
+                    words={['Meets You', 'Brings Beauty', 'Makes Dreams', 'Gives Love']}
                     interval={6000}
                     initialDelay={4000}
                   />
