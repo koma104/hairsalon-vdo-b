@@ -112,12 +112,12 @@ const WordCarousel = ({
 
   const renderWord = (word: string) => {
     // 文字列を分割して後半部分にspanを追加
-    if (word === 'Makes Dreams') {
+    if (word === 'Offers Care') {
       return (
         <>
-          Makes{' '}
+          Offers{' '}
           <span className={styles['accent-word']} style={{ fontFamily: 'var(--font-playfair)' }}>
-            Dreams
+            Care
           </span>
         </>
       )
