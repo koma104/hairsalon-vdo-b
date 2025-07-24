@@ -984,7 +984,7 @@ function HomeContent() {
                   <WordCarousel
                     words={['Meets You', 'Brings Beauty', 'Makes Dreams', 'Gives Love']}
                     interval={6000}
-                    initialDelay={4000}
+                    initialDelay={1000}
                   />
                 </div>
               </h2>
