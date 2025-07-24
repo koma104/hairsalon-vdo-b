@@ -43,6 +43,7 @@
 
 .info {
   display: grid;
+  gap: var(--spacing-xxs);
   margin-block-end: var(--spacing-sm);
 
   @media (min-width: 768px) {
@@ -87,4 +88,28 @@
   @media (min-width: 768px) {
     text-align: right;
   }
+}
+
+.access-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxs);
+  width: fit-content;
+  text-decoration: none;
+  font-family: var(--font-playfair-italic);
+  font-style: italic;
+  font-size: var(--font-xs);
+  transition: color 0.2s ease;
+
+  @media (any-hover: hover) {
+    &:hover {
+      color: var(--color-accent);
+    }
+  }
+}
+
+.access-icon {
+  flex-shrink: 0;
+  width: 1em;
+  height: 1em;
 }
