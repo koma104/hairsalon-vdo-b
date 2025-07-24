@@ -33,7 +33,7 @@
   place-items: center;
 
   & a {
-    font-family: var(--font-playfair-italic);
+    font-family: var(--font-playfair);
     font-style: italic;
     font-size: var(--font-2xl);
     font-weight: var(--font-weight-regular);

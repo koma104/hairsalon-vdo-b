@@ -64,7 +64,7 @@
 }
 
 .staff-title {
-  font-family: var(--font-playfair-italic);
+  font-family: var(--font-playfair);
   font-style: italic;
   font-size: var(--font-xs);
   color: var(--color-gray-30);
@@ -78,7 +78,7 @@
 }
 
 .staff-specialty {
-  font-family: var(--font-playfair-italic);
+  font-family: var(--font-playfair);
   font-style: italic;
   font-size: var(--font-xxs);
   color: var(--color-gray-30);

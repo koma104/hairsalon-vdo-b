@@ -350,7 +350,7 @@
 
 .menu-subtitle {
   margin-block-end: var(--spacing-sm);
-  font-family: var(--font-playfair-italic);
+  font-family: var(--font-playfair);
   font-style: italic;
   font-size: var(--font-xl);
   font-weight: var(--font-weight-regular);
