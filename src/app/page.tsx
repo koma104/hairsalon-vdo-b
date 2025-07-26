@@ -1136,6 +1136,37 @@ function HomeContent() {
                 </div>
               </Container>
             </section>
+
+            {/* フォント比較セクション */}
+            <section className={styles['content-section']}>
+              <Container>
+                <div className={styles['section-title-wrapper']}>
+                  <SectionTitle tag="h2" disableAnimation={true}>
+                    Font Comparison
+                  </SectionTitle>
+                </div>
+                <div className={styles['font-comparison']}>
+                  <div className={styles['font-sample']}>
+                    <h3>Playfair Display (現在)</h3>
+                    <SectionTitle tag="h3" fontFamily="playfair" disableAnimation={true}>
+                      YOU BEAUTY CARE LOVE
+                    </SectionTitle>
+                  </div>
+                  <div className={styles['font-sample']}>
+                    <h3>PT Serif</h3>
+                    <SectionTitle tag="h3" fontFamily="pt-serif" disableAnimation={true}>
+                      YOU BEAUTY CARE LOVE
+                    </SectionTitle>
+                  </div>
+                  <div className={styles['font-sample']}>
+                    <h3>Spectral</h3>
+                    <SectionTitle tag="h3" fontFamily="spectral" disableAnimation={true}>
+                      YOU BEAUTY CARE LOVE
+                    </SectionTitle>
+                  </div>
+                </div>
+              </Container>
+            </section>
           </>
         )}
 

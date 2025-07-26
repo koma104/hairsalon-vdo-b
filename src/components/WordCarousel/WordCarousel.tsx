@@ -115,37 +115,25 @@ const WordCarousel = ({
     if (word === 'Offers Care') {
       return (
         <>
-          Offers{' '}
-          <span className={styles['accent-word']} style={{ fontFamily: 'var(--font-playfair)' }}>
-            Care
-          </span>
+          Offers <span className={styles['accent-word']}>Care</span>
         </>
       )
     } else if (word === 'Gives Love') {
       return (
         <>
-          Gives{' '}
-          <span className={styles['accent-word']} style={{ fontFamily: 'var(--font-playfair)' }}>
-            Love
-          </span>
+          Gives <span className={styles['accent-word']}>Love</span>
         </>
       )
     } else if (word === 'Meets You') {
       return (
         <>
-          Meets{' '}
-          <span className={styles['accent-word']} style={{ fontFamily: 'var(--font-playfair)' }}>
-            You
-          </span>
+          Meets <span className={styles['accent-word']}>You</span>
         </>
       )
     } else if (word === 'Brings Beauty') {
       return (
         <>
-          Brings{' '}
-          <span className={styles['accent-word']} style={{ fontFamily: 'var(--font-playfair)' }}>
-            Beauty
-          </span>
+          Brings <span className={styles['accent-word']}>Beauty</span>
         </>
       )
     }

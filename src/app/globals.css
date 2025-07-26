@@ -27,6 +27,12 @@ select {
     sans-serif;
   --font-figtree: 'Figtree', 'Helvetica Neue', Arial, sans-serif;
   --font-playfair: 'Playfair Display', Georgia, serif;
+  --font-pt-serif: 'PT Serif', Georgia, serif;
+  --font-spectral: 'Spectral', Georgia, serif;
+
+  /* デバッグ用: フォント変数の確認 */
+  --debug-font-pt-serif: 'PT Serif';
+  --debug-font-spectral: 'Spectral';
 }
 
 /* カラー */

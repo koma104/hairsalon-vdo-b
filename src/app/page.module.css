@@ -350,7 +350,7 @@
 
 .menu-subtitle {
   margin-block-end: var(--spacing-sm);
-  font-family: var(--font-playfair);
+  font-family: var(--font-pt-serif);
   font-style: italic;
   font-size: var(--font-xl);
   font-weight: var(--font-weight-regular);
@@ -397,4 +397,33 @@
   text-align: center;
   max-width: calc(var(--spacing-3xl) * 4);
   margin-inline: auto;
+}
+
+/* フォント比較セクション */
+.font-comparison {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xl);
+  margin-block-start: var(--spacing-2xl);
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    gap: var(--spacing-3xl);
+  }
+}
+
+.font-sample {
+  flex: 1;
+  text-align: center;
+  padding: var(--spacing-lg);
+  border: 1px solid var(--color-gray-20);
+  border-radius: 8px;
+  background-color: var(--color-white);
+
+  & h3 {
+    font-size: var(--font-sm);
+    color: var(--color-gray-40);
+    margin-block-end: var(--spacing-md);
+    font-weight: var(--font-weight-medium);
+  }
 }

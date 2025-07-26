@@ -96,7 +96,7 @@
   gap: var(--spacing-xxs);
   width: fit-content;
   text-decoration: none;
-  font-family: var(--font-playfair);
+  font-family: var(--font-pt-serif);
   font-style: italic;
   font-size: var(--font-xs);
   transition: color 0.2s ease;

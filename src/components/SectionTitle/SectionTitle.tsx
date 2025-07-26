@@ -6,10 +6,11 @@ interface SectionTitleProps {
   children: React.ReactNode
   tag?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
   disableAnimation?: boolean
+  fontFamily?: 'playfair' | 'pt-serif' | 'spectral'
 }
 
 const SectionTitle = forwardRef<HTMLHeadingElement, SectionTitleProps>(
-  ({ children, tag: Tag = 'h1', disableAnimation = false }, ref) => {
+  ({ children, tag: Tag = 'h1', disableAnimation = false, fontFamily = 'pt-serif' }, ref) => {
     const internalRef = useRef<HTMLHeadingElement>(null)
 
     // 外部refに内部refを転送
@@ -66,7 +67,10 @@ const SectionTitle = forwardRef<HTMLHeadingElement, SectionTitleProps>(
     }, [disableAnimation])
 
     return (
-      <Tag ref={internalRef} className={styles['section-title']}>
+      <Tag
+        ref={internalRef}
+        className={`${styles['section-title']} ${styles[`font-${fontFamily}`]}`}
+      >
         <span>{children}</span>
       </Tag>
     )
