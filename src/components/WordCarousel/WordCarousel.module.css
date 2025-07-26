@@ -29,8 +29,8 @@
 }
 
 .accent-word {
-  margin-inline-start: -0.5rem;
+  margin-inline-start: -0.25rem;
   font-family: var(--font-playfair);
   font-style: italic;
-  font-weight: 100;
+  font-weight: var(--font-weight-regular);
 }

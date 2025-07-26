@@ -17,4 +17,5 @@
   display: inline-block;
   transform: translateY(100%);
   line-height: 1; /* spanでも明示的に設定 */
+  padding-inline: 0.5em;
 }
