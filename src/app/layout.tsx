@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { Suspense } from 'react'
 import Header from '@/components/Header/Header'
 import Footer from '@/components/Footer/Footer'
 import { PageProvider } from '@/contexts/PageContext'
@@ -6,7 +7,8 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: '美容室VDO | 渋谷のヘアサロン',
-  description: '渋谷の美容室VDO。カット・カラー・パーマ・ヘッドスパなど、あなたの美しさを引き出すサロンです。ご予約・スタッフ紹介・最新ニュースも掲載。',
+  description:
+    '渋谷の美容室VDO。カット・カラー・パーマ・ヘッドスパなど、あなたの美しさを引き出すサロンです。ご予約・スタッフ紹介・最新ニュースも掲載。',
   keywords: ['美容室', 'ヘアサロン', '渋谷', 'カット', 'カラー', 'パーマ', 'ヘッドスパ', 'VDO'],
   icons: {
     icon: '/favicon.png',
@@ -14,7 +16,8 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: '美容室VDO | 渋谷のヘアサロン',
-    description: '渋谷の美容室VDO。カット・カラー・パーマ・ヘッドスパなど、あなたの美しさを引き出すサロンです。ご予約・スタッフ紹介・最新ニュースも掲載。',
+    description:
+      '渋谷の美容室VDO。カット・カラー・パーマ・ヘッドスパなど、あなたの美しさを引き出すサロンです。ご予約・スタッフ紹介・最新ニュースも掲載。',
     url: 'https://hairsalon-vdo.vercel.app/',
     siteName: '美容室VDO',
     images: [
@@ -31,7 +34,8 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: '美容室VDO | 渋谷のヘアサロン',
-    description: '渋谷の美容室VDO。カット・カラー・パーマ・ヘッドスパなど、あなたの美しさを引き出すサロンです。',
+    description:
+      '渋谷の美容室VDO。カット・カラー・パーマ・ヘッドスパなど、あなたの美しさを引き出すサロンです。',
     images: ['/images/ogp.png'],
     site: '@your_twitter_id', // 必要に応じて変更
   },
@@ -64,7 +68,9 @@ export default function RootLayout({
         <PageProvider isSPAEnabled={true}>
           <Header />
           <main data-nextjs-scroll-focus-boundary>{children}</main>
-          <Footer />
+          <Suspense fallback={null}>
+            <Footer />
+          </Suspense>
         </PageProvider>
         {/* 開発環境でのNext.jsスクロール警告を抑制 */}
         {process.env.NODE_ENV === 'development' && (

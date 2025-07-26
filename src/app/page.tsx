@@ -1,9 +1,9 @@
 'use client'
 
-import { useState, useEffect, Suspense, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useRouter, useSearchParams, usePathname } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import styles from './page.module.css'
 import { newsItems } from '@/lib/newsData'
 import Button from '@/components/Button/Button'
@@ -69,7 +69,7 @@ function HomeContent() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const { currentPage, setCurrentPage } = usePageContext()
   const router = useRouter()
-  const searchParams = useSearchParams()
+  // const searchParams = useSearchParams()
   const pathname = usePathname() // 追加
 
   // アニメーション用のref
@@ -259,16 +259,16 @@ function HomeContent() {
   }, []) // 初回のみ実行されるように変更
 
   // URLパラメータを監視してニュース詳細を表示（newsクエリパラメータのみ）
-  useEffect(() => {
-    const newsQueryParam = searchParams.get('news')
+  // useEffect(() => {
+  //   const newsQueryParam = searchParams.get('news')
 
-    if (newsQueryParam) {
-      setCurrentArticleId(newsQueryParam)
-      setCurrentPage('news')
-    } else {
-      setCurrentArticleId(null)
-    }
-  }, [searchParams, setCurrentPage])
+  //   if (newsQueryParam) {
+  //     setCurrentArticleId(newsQueryParam)
+  //     setCurrentPage('news')
+  //   } else {
+  //     setCurrentArticleId(null)
+  //   }
+  // }, [searchParams, setCurrentPage])
 
   // ページ遷移時にbody heightをクリア（フッター余白問題の解決）
   useEffect(() => {
@@ -1160,9 +1160,5 @@ function HomeContent() {
 
 // メインのHomeコンポーネント（Suspenseでラップ）
 export default function Home() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <HomeContent />
-    </Suspense>
-  )
+  return <HomeContent />
 }

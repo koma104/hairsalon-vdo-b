@@ -209,7 +209,7 @@ function HeaderContent() {
 // メインのHeaderコンポーネント（Suspenseでラップ）
 export default function Header() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={null}>
       <HeaderContent />
     </Suspense>
   )
