@@ -971,7 +971,7 @@ function HomeContent() {
                 </div>
                 <div className={styles['title-line']}>
                   <WordCarousel
-                    words={['Meets You', 'Brings Beauty', 'Offers Care', 'Gives Love']}
+                    words={['Meets You', 'Brings Beauty', 'Offers Care', 'Gives Smile']}
                     interval={6000}
                     initialDelay={1000}
                   />

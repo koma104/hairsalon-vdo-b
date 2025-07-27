@@ -121,12 +121,12 @@ const WordCarousel = ({
           </span>
         </>
       )
-    } else if (word === 'Gives Love') {
+    } else if (word === 'Gives Smile') {
       return (
         <>
           Gives{' '}
           <span className={styles['accent-word']} style={{ fontFamily: 'var(--font-playfair)' }}>
-            Love
+            Smile
           </span>
         </>
       )
