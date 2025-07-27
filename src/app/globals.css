@@ -54,7 +54,7 @@ select {
   --color-nav-bg: var(--color-gray-10);
   --color-hover: var(--color-accent);
   --color-select: var(--color-gray-60);
-  --color-container-inline: var(--color-gray-10);
+  --color-container-inline: var(--color-gray-20);
 }
 
 /* スペーシング */
