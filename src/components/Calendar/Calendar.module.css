@@ -36,7 +36,6 @@
   &:focus-visible {
     outline: 2px solid var(--color-accent);
     outline-offset: 2px;
-    color: var(--color-accent);
   }
 
   @media (any-hover: hover) {
@@ -87,8 +86,6 @@
   &:focus-visible {
     outline: 2px solid var(--color-accent);
     outline-offset: 2px;
-    background-color: var(--color-accent);
-    color: var(--color-white);
   }
 
   @media (any-hover: hover) {
@@ -104,8 +101,6 @@
   color: var(--color-white);
 
   &:focus-visible {
-    background-color: var(--color-accent);
-    color: var(--color-white);
     outline: 2px solid var(--color-accent);
     outline-offset: 2px;
   }

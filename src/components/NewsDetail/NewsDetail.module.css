@@ -90,30 +90,6 @@
   padding-inline: var(--spacing-sm);
 }
 
-.prev,
-.next {
-  font-size: var(--font-sm);
-  text-decoration: none;
-  border: none;
-  background: none;
-  cursor: pointer;
-  padding: var(--spacing-xs) var(--spacing-sm);
-  color: inherit;
-  transition: color 0.2s ease;
-
-  &:focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 2px;
-    color: var(--color-accent);
-  }
-
-  @media (any-hover: hover) {
-    &:hover {
-      color: var(--color-hover);
-    }
-  }
-}
-
 .disabled {
   color: var(--color-gray-25);
   pointer-events: none;

@@ -89,17 +89,38 @@
   display: flex;
   align-items: center;
   gap: 0.3em;
+  padding-block: var(--spacing-xxs);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: 2px solid transparent;
+  background: transparent;
+  color: var(--color-gray-60);
+
+  @media (any-hover: hover) {
+    &:hover {
+      color: var(--color-hover);
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
 }
 
 .prev {
   justify-self: start;
+  padding-inline-end: var(--spacing-xs);
 }
 
 .next {
   justify-self: end;
+  padding-inline-start: var(--spacing-xs);
 }
 
 .disabled {
   color: var(--color-gray-25);
   pointer-events: none;
+  cursor: not-allowed;
+  opacity: 0.5;
 }

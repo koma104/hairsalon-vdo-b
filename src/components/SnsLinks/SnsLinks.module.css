@@ -1,7 +1,7 @@
 .sns-links {
   display: grid;
   grid-auto-flow: column;
-  justify-content: center; /* SPナビでは中央寄せ */
+  justify-content: center;
   gap: var(--spacing-xl);
 
   @media (min-width: 768px) {
@@ -12,13 +12,14 @@
   & a {
     color: var(--color-sns);
     transition: all 0.2s ease;
-    border-radius: 2px;
     padding: var(--spacing-xxs);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     &:focus-visible {
       outline: 2px solid var(--color-accent);
       outline-offset: 2px;
-      color: var(--color-hover);
     }
 
     @media (any-hover: hover) {
@@ -29,7 +30,7 @@
   }
 
   & svg {
-    vertical-align: middle;
+    display: block;
   }
 }
 

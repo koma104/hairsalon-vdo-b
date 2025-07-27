@@ -48,7 +48,6 @@
     &:focus-visible {
       outline: 2px solid var(--color-accent);
       outline-offset: 2px;
-      color: var(--color-hover);
     }
 
     @media (any-hover: hover) {
@@ -69,12 +68,10 @@
     color: #707070;
     transition: all 0.2s ease;
     padding: var(--spacing-xxs);
-    border-radius: 2px;
 
     &:focus-visible {
       outline: 2px solid var(--color-accent);
       outline-offset: 2px;
-      color: var(--color-hover);
     }
 
     @media (any-hover: hover) {

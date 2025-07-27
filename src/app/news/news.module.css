@@ -19,14 +19,12 @@
   color: var(--color-gray-60);
   font-size: var(--font-md);
   font-weight: normal;
-  padding-block: var(--spacing-xs);
-  padding-inline: var(--spacing-sm);
+  padding: var(--spacing-xs);
   transition: color 0.3s;
 
   &:focus-visible {
     outline: 2px solid var(--color-accent);
     outline-offset: 2px;
-    color: var(--color-accent);
   }
 
   @media (any-hover: hover) {
