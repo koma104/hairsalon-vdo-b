@@ -112,7 +112,14 @@
   font-family: var(--font-playfair);
   font-style: italic;
   font-size: var(--font-xs);
-  transition: color 0.2s ease;
+  transition: all 0.2s ease;
+  border-radius: 2px;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+    color: var(--color-accent);
+  }
 
   @media (any-hover: hover) {
     &:hover {
@@ -156,6 +163,9 @@
   &:focus-visible {
     outline: 2px solid var(--color-accent);
     outline-offset: 2px;
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+    transform: scale(1.05);
   }
 
   @media (any-hover: hover) {

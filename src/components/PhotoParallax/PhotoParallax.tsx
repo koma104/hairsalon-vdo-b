@@ -34,7 +34,6 @@ export default function PhotoParallax({ photos }: PhotoParallaxProps) {
 
       if (isPC) {
         // PC: ScrollTriggerベースの実装（安全で確実なスクロール）
-        console.log('PC detected: Using ScrollTrigger for parallax')
 
         photoItems.forEach((item, index) => {
           const element = item as HTMLElement
@@ -82,7 +81,6 @@ export default function PhotoParallax({ photos }: PhotoParallaxProps) {
         }
       } else {
         // SP: ScrollSmootherベースの実装（滑らかな動き）
-        console.log('Mobile detected: Using ScrollSmoother for parallax')
 
         let stopTimer: number | null = null
         let smoother: { kill: () => void } | null = null
@@ -118,8 +116,6 @@ export default function PhotoParallax({ photos }: PhotoParallaxProps) {
                 }, 100)
               },
             })
-
-            console.log('ScrollSmoother initialized for mobile')
           } catch (error) {
             console.error('ScrollSmoother initialization failed:', error)
             if (document.body) {

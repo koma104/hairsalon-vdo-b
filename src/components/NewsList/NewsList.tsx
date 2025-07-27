@@ -40,49 +40,55 @@ const NewsList = forwardRef<HTMLDivElement, NewsListProps>(
   ) => {
     // 初期値はSSR/CSR共通にするため、maxItemsまたはデフォルト値を使用
     const [visibleCount, setVisibleCount] = useState(maxItems || maxItemsSp || 6)
+    const [isClient, setIsClient] = useState(false)
 
     const router = useRouter()
     const { setCurrentPage } = usePageContext()
     const moreButtonRefInternal = useRef<HTMLButtonElement>(null)
 
+    // クライアントサイドでのみ実行
+    useEffect(() => {
+      setIsClient(true)
+    }, [])
+
     // 初期表示件数の設定（一度だけ）
     useEffect(() => {
-      if (maxItemsSp !== undefined && maxItemsPc !== undefined) {
-        const isMobile = window.innerWidth < 768
-        const initialCount = isMobile ? maxItemsSp : maxItemsPc
-        setVisibleCount(initialCount)
+      if (!isClient || maxItemsSp === undefined || maxItemsPc === undefined) return
 
-        // ホームページでのみアニメーション初期状態を設定
-        // ニュース一覧ページでは即座に表示
-        if (scrollTriggerRef) {
-          // ホームページの場合：アニメーション用の初期状態を設定
-          setTimeout(() => {
-            if (ref && typeof ref === 'object' && ref.current) {
-              const newsItems = ref.current.querySelectorAll('button[class*="news-item"]')
-              if (newsItems.length > 0) {
-                gsap.set(newsItems, {
-                  y: 50,
-                  opacity: 0,
-                })
-              }
+      const isMobile = window.innerWidth < 768
+      const initialCount = isMobile ? maxItemsSp : maxItemsPc
+      setVisibleCount(initialCount)
+
+      // ホームページでのみアニメーション初期状態を設定
+      // ニュース一覧ページでは即座に表示
+      if (scrollTriggerRef) {
+        // ホームページの場合：アニメーション用の初期状態を設定
+        setTimeout(() => {
+          if (ref && typeof ref === 'object' && ref.current) {
+            const newsItems = ref.current.querySelectorAll('button[class*="news-item"]')
+            if (newsItems.length > 0) {
+              gsap.set(newsItems, {
+                y: 50,
+                opacity: 0,
+              })
             }
-          }, 100)
-        } else {
-          // ニュース一覧ページの場合：即座に表示
-          setTimeout(() => {
-            if (ref && typeof ref === 'object' && ref.current) {
-              const newsItems = ref.current.querySelectorAll('button[class*="news-item"]')
-              if (newsItems.length > 0) {
-                gsap.set(newsItems, {
-                  y: 0,
-                  opacity: 1,
-                })
-              }
+          }
+        }, 100)
+      } else {
+        // ニュース一覧ページの場合：即座に表示
+        setTimeout(() => {
+          if (ref && typeof ref === 'object' && ref.current) {
+            const newsItems = ref.current.querySelectorAll('button[class*="news-item"]')
+            if (newsItems.length > 0) {
+              gsap.set(newsItems, {
+                y: 0,
+                opacity: 1,
+              })
             }
-          }, 100)
-        }
+          }
+        }, 100)
       }
-    }, [scrollTriggerRef]) // scrollTriggerRefを依存配列に追加
+    }, [scrollTriggerRef, isClient, maxItemsSp, maxItemsPc, ref])
 
     const displayedItems = items.slice(0, visibleCount)
 
@@ -99,6 +105,8 @@ const NewsList = forwardRef<HTMLDivElement, NewsListProps>(
       if (onItemClick) {
         onItemClick(item)
       } else {
+        if (!isClient) return
+
         const isMobile = window.innerWidth < 768
         if (isMobile) {
           router.push(`/news/${item.id}`)
@@ -111,7 +119,7 @@ const NewsList = forwardRef<HTMLDivElement, NewsListProps>(
     // 表示制御用のヘルパー関数
     const getCountSettings = () => {
       if (maxItemsSp !== undefined && maxItemsPc !== undefined) {
-        const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
+        const isMobile = isClient && window.innerWidth < 768
         const initialCount = isMobile ? maxItemsSp : maxItemsPc
         const addCount = isMobile ? 4 : 6 // SP: 4件、PC: 6件追加
         return { initialCount, addCount, maxCountAfterMore: initialCount + addCount }
@@ -120,6 +128,8 @@ const NewsList = forwardRef<HTMLDivElement, NewsListProps>(
     }
 
     const handleShowMore = () => {
+      if (!isClient) return
+
       const { addCount } = getCountSettings()
       const newCount = visibleCount + addCount
 
@@ -176,6 +186,13 @@ const NewsList = forwardRef<HTMLDivElement, NewsListProps>(
               key={item.id}
               className={`${styles['news-item']} ${layout === 'grid' ? styles['news-item-grid'] : styles['news-item-list']}`}
               onClick={() => handleItemClick(item)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault()
+                  handleItemClick(item)
+                }
+              }}
+              tabIndex={0}
             >
               {layout === 'grid' ? (
                 <>

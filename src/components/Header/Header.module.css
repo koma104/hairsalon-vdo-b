@@ -141,15 +141,19 @@
     text-transform: uppercase;
     text-decoration: none;
     color: var(--color-black-blend);
-    transition: color 0.2s ease;
+    transition: all 0.2s ease;
+    padding: var(--spacing-xxs);
+    border-radius: 2px;
 
     &:focus-visible {
-      color: #f938aa;
+      outline: 2px solid var(--color-accent);
+      outline-offset: 2px;
+      color: var(--color-accent);
     }
 
     @media (any-hover: hover) {
       &:hover {
-        color: #f938aa;
+        color: var(--color-accent);
       }
     }
   }

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter, usePathname } from 'next/navigation'
@@ -95,7 +95,7 @@ function HomeContent() {
   const currentImageIndexRef = useRef(0)
 
   // 画像切り替えアニメーション
-  const switchToNextImage = (heroParallaxAnimationRef: gsap.core.Tween | null) => {
+  const switchToNextImage = useCallback((heroParallaxAnimationRef: gsap.core.Tween | null) => {
     const nextIndex = (currentImageIndexRef.current + 1) % heroImages.length
 
     // 現在の画像と次の画像の要素を取得
@@ -128,6 +128,168 @@ function HomeContent() {
     setTimeout(() => switchToNextImage(heroParallaxAnimationRef), 6000)
 
     return heroParallaxAnimationRef
+  }, [])
+
+  // 動的行分割システム（PC/SPで切り替え）
+  const createDynamicLineSplit = useCallback((): NodeListOf<Element> | null => {
+    if (!conceptTextRef.current) return null
+
+    const text = conceptTextRef.current.textContent || ''
+    const element = conceptTextRef.current
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
+
+    // 元のテキストに戻す
+    element.innerHTML = text
+
+    let lines: string[] = []
+
+    if (isMobile) {
+      // SP: 自然な改行（元のロジック）
+      const chars = text.split('')
+      element.innerHTML = chars
+        .map(
+          (char, index) =>
+            `<span data-char-index="${index}">${char === ' ' ? '&nbsp;' : char}</span>`
+        )
+        .join('')
+
+      // 各文字の位置を取得して行を検出
+      const charSpans = element.querySelectorAll('[data-char-index]')
+      let currentLine = ''
+      let currentTop = -1
+
+      charSpans.forEach((span, index) => {
+        const spanElement = span as HTMLElement
+        const rect = spanElement.getBoundingClientRect()
+
+        // 新しい行の開始を検出（Y座標が変わった時）
+        if (currentTop === -1) {
+          currentTop = Math.round(rect.top)
+        } else if (Math.round(rect.top) !== currentTop) {
+          // 新しい行に移った
+          if (currentLine.trim()) {
+            lines.push(currentLine.trim())
+          }
+          currentLine = ''
+          currentTop = Math.round(rect.top)
+        }
+
+        currentLine += chars[index]
+      })
+
+      // 最後の行を追加
+      if (currentLine.trim()) {
+        lines.push(currentLine.trim())
+      }
+    } else {
+      // PC: 句点（。）で改行
+      lines = text
+        .split('。')
+        .map((line) => line.trim())
+        .filter((line) => line.length > 0)
+      // 全ての行に句点を復元
+      lines = lines.map((line) => {
+        return line + '。'
+      })
+    }
+
+    // 検出した行でHTMLを再構築
+    element.innerHTML = lines
+      .map((line, index) => `<div class="dynamic-line" data-line="${index}">${line}</div>`)
+      .join('')
+
+    return element.querySelectorAll('.dynamic-line')
+  }, [])
+
+  // ResizeObserver でリサイズ監視
+  const setupResizeObserver = useCallback(() => {
+    if (!conceptTextRef.current) return
+
+    let resizeTimeout: NodeJS.Timeout
+
+    const resizeObserver = new ResizeObserver(() => {
+      // デバウンス処理（リサイズ完了後に実行）
+      clearTimeout(resizeTimeout)
+      resizeTimeout = setTimeout(() => {
+        // ScrollTriggerを一時無効化
+        ScrollTrigger.getAll().forEach((trigger) => {
+          if (trigger.vars?.id === 'dynamic-text') {
+            trigger.kill()
+          }
+        })
+
+        // 動的行分割を再実行
+        const dynamicLines = createDynamicLineSplit()
+        if (dynamicLines) {
+          setupDynamicAnimation(dynamicLines)
+        }
+      }, 300) // 300ms後に実行
+    })
+
+    resizeObserver.observe(conceptTextRef.current)
+
+    // クリーンアップ関数を返す
+    return () => resizeObserver.disconnect()
+  }, [createDynamicLineSplit])
+
+  // 動的行アニメーション設定
+  const setupDynamicAnimation = (lines: NodeListOf<Element>) => {
+    if (!lines.length || !conceptTextRef.current) return
+
+    // 親要素の設定をマスクベースに最適化
+    gsap.set(conceptTextRef.current, {
+      position: 'relative',
+    })
+
+    // 各行の詳細確認とマスクベース初期設定
+    lines.forEach((line) => {
+      const lineElement = line as HTMLElement
+
+      // 各行を個別にラップしてoverflow: hiddenでマスク
+      const lineWrapper = document.createElement('div')
+      lineWrapper.style.overflow = 'hidden'
+      lineWrapper.style.position = 'relative'
+
+      // 元の行をラッパーで包む
+      const parent = lineElement.parentNode
+      if (parent) {
+        parent.insertBefore(lineWrapper, lineElement)
+        lineWrapper.appendChild(lineElement)
+      }
+
+      // 各行を行の高さ分だけ下に移動
+      gsap.set(lineElement, {
+        yPercent: 100,
+        willChange: 'transform',
+        force3D: true,
+        immediateRender: true,
+      })
+    })
+
+    // ScrollTrigger設定
+    ScrollTrigger.create({
+      trigger: conceptTextRef.current,
+      start: 'top bottom-=250',
+      id: 'dynamic-text',
+      onEnter: () => {
+        gsap.to(lines, {
+          yPercent: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+          stagger: 0.15,
+          force3D: true,
+        })
+      },
+      onLeaveBack: () => {
+        gsap.to(lines, {
+          yPercent: 100,
+          duration: 0.5,
+          ease: 'power3.in',
+          stagger: 0.1,
+          force3D: true,
+        })
+      },
+    })
   }
 
   // 画像インデックスの変更を監視
@@ -301,17 +463,6 @@ function HomeContent() {
           smoother.kill()
         }
       })
-
-      // 最終確認
-      setTimeout(() => {
-        console.log(
-          '🔧 Final check - computed height:',
-          window.getComputedStyle(document.body).height
-        )
-        console.log('🔧 Final check - style height:', document.body.style.height)
-      }, 100)
-    } else {
-      console.log('🔍 ホームページまたはbody要素なし')
     }
   }, [pathname, currentPage, currentArticleId])
 
@@ -788,169 +939,7 @@ function HomeContent() {
     return () => {
       clearTimeout(timer)
     }
-  }, [])
-
-  // 動的行分割システム（PC/SPで切り替え）
-  const createDynamicLineSplit = (): NodeListOf<Element> | null => {
-    if (!conceptTextRef.current) return null
-
-    const text = conceptTextRef.current.textContent || ''
-    const element = conceptTextRef.current
-    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
-
-    // 元のテキストに戻す
-    element.innerHTML = text
-
-    let lines: string[] = []
-
-    if (isMobile) {
-      // SP: 自然な改行（元のロジック）
-      const chars = text.split('')
-      element.innerHTML = chars
-        .map(
-          (char, index) =>
-            `<span data-char-index="${index}">${char === ' ' ? '&nbsp;' : char}</span>`
-        )
-        .join('')
-
-      // 各文字の位置を取得して行を検出
-      const charSpans = element.querySelectorAll('[data-char-index]')
-      let currentLine = ''
-      let currentTop = -1
-
-      charSpans.forEach((span, index) => {
-        const spanElement = span as HTMLElement
-        const rect = spanElement.getBoundingClientRect()
-
-        // 新しい行の開始を検出（Y座標が変わった時）
-        if (currentTop === -1) {
-          currentTop = Math.round(rect.top)
-        } else if (Math.round(rect.top) !== currentTop) {
-          // 新しい行に移った
-          if (currentLine.trim()) {
-            lines.push(currentLine.trim())
-          }
-          currentLine = ''
-          currentTop = Math.round(rect.top)
-        }
-
-        currentLine += chars[index]
-      })
-
-      // 最後の行を追加
-      if (currentLine.trim()) {
-        lines.push(currentLine.trim())
-      }
-    } else {
-      // PC: 句点（。）で改行
-      lines = text
-        .split('。')
-        .map((line) => line.trim())
-        .filter((line) => line.length > 0)
-      // 全ての行に句点を復元
-      lines = lines.map((line) => {
-        return line + '。'
-      })
-    }
-
-    // 検出した行でHTMLを再構築
-    element.innerHTML = lines
-      .map((line, index) => `<div class="dynamic-line" data-line="${index}">${line}</div>`)
-      .join('')
-
-    return element.querySelectorAll('.dynamic-line')
-  }
-
-  // ResizeObserver でリサイズ監視
-  const setupResizeObserver = () => {
-    if (!conceptTextRef.current) return
-
-    let resizeTimeout: NodeJS.Timeout
-
-    const resizeObserver = new ResizeObserver(() => {
-      // デバウンス処理（リサイズ完了後に実行）
-      clearTimeout(resizeTimeout)
-      resizeTimeout = setTimeout(() => {
-        // ScrollTriggerを一時無効化
-        ScrollTrigger.getAll().forEach((trigger) => {
-          if (trigger.vars?.id === 'dynamic-text') {
-            trigger.kill()
-          }
-        })
-
-        // 動的行分割を再実行
-        const dynamicLines = createDynamicLineSplit()
-        if (dynamicLines) {
-          setupDynamicAnimation(dynamicLines)
-        }
-      }, 300) // 300ms後に実行
-    })
-
-    resizeObserver.observe(conceptTextRef.current)
-
-    // クリーンアップ関数を返す
-    return () => resizeObserver.disconnect()
-  }
-
-  // 動的行アニメーション設定
-  const setupDynamicAnimation = (lines: NodeListOf<Element>) => {
-    if (!lines.length || !conceptTextRef.current) return
-
-    // 親要素の設定をマスクベースに最適化
-    gsap.set(conceptTextRef.current, {
-      position: 'relative',
-    })
-
-    // 各行の詳細確認とマスクベース初期設定
-    lines.forEach((line) => {
-      const lineElement = line as HTMLElement
-
-      // 各行を個別にラップしてoverflow: hiddenでマスク
-      const lineWrapper = document.createElement('div')
-      lineWrapper.style.overflow = 'hidden'
-      lineWrapper.style.position = 'relative'
-
-      // 元の行をラッパーで包む
-      const parent = lineElement.parentNode
-      if (parent) {
-        parent.insertBefore(lineWrapper, lineElement)
-        lineWrapper.appendChild(lineElement)
-      }
-
-      // 各行を行の高さ分だけ下に移動
-      gsap.set(lineElement, {
-        yPercent: 100,
-        willChange: 'transform',
-        force3D: true,
-        immediateRender: true,
-      })
-    })
-
-    // ScrollTrigger設定
-    ScrollTrigger.create({
-      trigger: conceptTextRef.current,
-      start: 'top bottom-=250',
-      id: 'dynamic-text',
-      onEnter: () => {
-        gsap.to(lines, {
-          yPercent: 0,
-          duration: 0.8,
-          ease: 'power3.out',
-          stagger: 0.15,
-          force3D: true,
-        })
-      },
-      onLeaveBack: () => {
-        gsap.to(lines, {
-          yPercent: 100,
-          duration: 0.5,
-          ease: 'power3.in',
-          stagger: 0.1,
-          force3D: true,
-        })
-      },
-    })
-  }
+  }, [setupResizeObserver, switchToNextImage, createDynamicLineSplit])
 
   return (
     <>
@@ -1130,6 +1119,7 @@ function HomeContent() {
                       e.preventDefault()
                       setCurrentPage('reserve')
                     }}
+                    tabIndex={-1}
                   >
                     <Button variant="secondary">reserve</Button>
                   </Link>

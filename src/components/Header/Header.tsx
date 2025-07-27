@@ -3,7 +3,7 @@
 import React, { useState, useEffect, Suspense } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useSearchParams, useRouter, usePathname } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import Nav from '../Nav/Nav'
 import styles from './Header.module.css'
 import { usePageContext } from '@/contexts/PageContext'
@@ -13,7 +13,6 @@ function HeaderContent() {
   const [isOpen, setIsOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const [isClient, setIsClient] = useState(false)
-  const searchParams = useSearchParams()
   const router = useRouter()
   const pathname = usePathname()
   const { currentPage, setCurrentPage } = usePageContext()
@@ -22,7 +21,7 @@ function HeaderContent() {
   const isStandalonePage = pathname !== '/' && !pathname.startsWith('/?')
   const isHomePage = !isStandalonePage && currentPage === 'home'
 
-  const hasNewsParam = searchParams.get('news') !== null
+  const hasNewsParam = pathname.includes('news') // パラメータを使用しないため、パス名で判断
 
   // ナビゲーション処理
   const handleNavigation = (targetPage: string, href: string) => {
@@ -31,7 +30,12 @@ function HeaderContent() {
       if (targetPage === 'home') {
         window.location.href = '/'
       } else {
-        router.push(href)
+        // ニュース詳細ページからニュース一覧への遷移を特別処理
+        if (pathname.includes('/news/') && targetPage === 'news') {
+          window.location.href = '/news'
+        } else {
+          router.push(href)
+        }
       }
     } else {
       // ホームページ内での遷移はPageContextを使用

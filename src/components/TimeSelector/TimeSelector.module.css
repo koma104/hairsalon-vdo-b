@@ -1,6 +1,5 @@
 .time-selector {
   width: 100%;
-  overflow: hidden;
 }
 
 .tabs {
@@ -17,6 +16,11 @@
   border: none;
   cursor: pointer;
   border-block-end: 2px solid var(--color-gray-20);
+
+  &:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
 
   &.active {
     color: var(--color-black);
@@ -54,7 +58,7 @@
     }
 
     &:focus-visible {
-      outline: 2px solid var(--color-black);
+      outline: 2px solid var(--color-accent);
       outline-offset: 2px;
     }
 
@@ -66,7 +70,7 @@
       pointer-events: none;
 
       &:focus-visible {
-        outline: 2px solid var(--color-black);
+        outline: 2px solid var(--color-accent);
         outline-offset: 2px;
       }
     }

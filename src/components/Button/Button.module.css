@@ -27,6 +27,12 @@
   border-radius: 100vmax;
 }
 
+.primary:focus-visible,
+.secondary:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
 @media (any-hover: hover) {
   .primary:hover {
     background-color: var(--color-hover);

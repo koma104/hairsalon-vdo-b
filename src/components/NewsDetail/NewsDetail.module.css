@@ -101,6 +101,12 @@
   color: inherit;
   transition: color 0.2s ease;
 
+  &:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+    color: var(--color-accent);
+  }
+
   @media (any-hover: hover) {
     &:hover {
       color: var(--color-hover);

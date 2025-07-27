@@ -1,3 +1,5 @@
+'use client'
+
 import React, { forwardRef, useEffect, useRef, useImperativeHandle } from 'react'
 import { gsap, ScrollTrigger } from '@/lib/gsap'
 import styles from './SectionTitle.module.css'

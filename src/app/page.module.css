@@ -254,10 +254,13 @@
   text-align: left;
   font-family: inherit;
   font-size: inherit;
-  overflow: hidden;
+  /* overflow: hidden; フォーカス表示のため削除 */
 
   &:focus-visible {
-    color: var(--color-hover);
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+    color: var(--color-accent);
+    padding: 2px; /* outlineが切れないようにpaddingを追加 */
   }
 
   @media (any-hover: hover) {
@@ -311,8 +314,10 @@
     border-block-end-color 0.2s ease;
 
   &:focus-visible {
-    color: var(--color-hover);
-    border-block-end-color: var(--color-hover);
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+    color: var(--color-accent);
+    border-block-end-color: var(--color-accent);
   }
 
   @media (any-hover: hover) {
