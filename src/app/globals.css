@@ -31,8 +31,9 @@ select {
 
 /* カラー */
 :root {
-  --color-accent: #06c755;
+  --color-focus: #333;
   --color-black: #222; /* テキスト primary */
+  --color-black-rgb: 34, 34, 34; /* RGB値で定義 */
   --color-white: #fff;
   --color-gray-05: #fafafa; /* nav背景 */
   --color-gray-10: #eee;
@@ -44,7 +45,6 @@ select {
   --color-gray-60: #333; /* タイトルテキスト */
   --color-bg: #edeae6;
 
-  --color-accent-blend: #f938aa;
   --color-gray-60-blend: #ccc;
   --color-black-blend: #ddd;
 
@@ -52,7 +52,7 @@ select {
   --color-sns: #282828;
   --color-base-bg: var(--color-gray-05);
   --color-nav-bg: var(--color-gray-10);
-  --color-hover: var(--color-accent);
+  --color-hover: rgba(var(--color-black-rgb), 0.5);
   --color-select: var(--color-gray-60);
   --color-container-inline: var(--color-gray-20);
 }

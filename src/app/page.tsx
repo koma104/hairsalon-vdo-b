@@ -992,7 +992,7 @@ function HomeContent() {
                   setCurrentPage('reserve')
                 }}
               >
-                <Button variant="secondary">reserve</Button>
+                <Button>reserve</Button>
               </Link>
             </div>
           </div>
@@ -1121,7 +1121,7 @@ function HomeContent() {
                     }}
                     tabIndex={-1}
                   >
-                    <Button variant="secondary">reserve</Button>
+                    <Button>reserve</Button>
                   </Link>
                 </div>
               </Container>

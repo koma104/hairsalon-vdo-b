@@ -95,14 +95,6 @@
     font-size: var(--font-xs);
     border: 1px solid var(--color-gray-60-blend);
     background-color: var(--color-gray-60-blend);
-
-    @media (any-hover: hover) {
-      &:hover {
-        background-color: var(--color-accent-blend);
-        border-color: var(--color-accent-blend);
-        color: #000;
-      }
-    }
   }
 }
 
@@ -257,7 +249,7 @@
   /* overflow: hidden; フォーカス表示のため削除 */
 
   &:focus-visible {
-    outline: 2px solid var(--color-accent);
+    outline: 2px solid var(--color-focus);
     outline-offset: 2px;
   }
 
@@ -312,7 +304,7 @@
     border-block-end-color 0.2s ease;
 
   &:focus-visible {
-    outline: 2px solid var(--color-accent);
+    outline: 2px solid var(--color-focus);
     outline-offset: 2px;
   }
 
