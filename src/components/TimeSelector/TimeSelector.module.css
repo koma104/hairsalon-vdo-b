@@ -51,9 +51,7 @@
 
     @media (any-hover: hover) {
       &:hover:not(.selected) {
-        background-color: var(--color-hover);
         border-color: var(--color-hover);
-        color: var(--color-white);
       }
     }
 
