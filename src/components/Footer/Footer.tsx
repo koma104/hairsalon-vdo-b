@@ -4,8 +4,15 @@ import React from 'react'
 import styles from './Footer.module.css'
 import SnsLinks from '../SnsLinks/SnsLinks'
 import ArrowUpIcon from '../icons/ArrowUpIcon'
+import { usePageContext } from '@/contexts/PageContext'
 
 const Footer = () => {
+  const { isInitialized } = usePageContext()
+
+  if (!isInitialized) {
+    return null
+  }
+
   return (
     <footer className={styles.footer}>
       <div className={styles['footer-wrapper']}>

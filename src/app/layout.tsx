@@ -68,9 +68,7 @@ export default function RootLayout({
         <PageProvider isSPAEnabled={true}>
           <Header />
           <main data-nextjs-scroll-focus-boundary>{children}</main>
-          <Suspense fallback={null}>
-            <Footer />
-          </Suspense>
+          <Footer />
         </PageProvider>
         {/* 開発環境でのNext.jsスクロール警告を抑制 */}
         {process.env.NODE_ENV === 'development' && (

@@ -1150,5 +1150,11 @@ function HomeContent() {
 
 // メインのHomeコンポーネント（Suspenseでラップ）
 export default function Home() {
+  const { isInitialized } = usePageContext()
+
+  if (!isInitialized) {
+    return null // 初期化完了まで何も表示しない
+  }
+
   return <HomeContent />
 }
