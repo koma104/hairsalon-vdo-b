@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import { Suspense } from 'react'
 import Header from '@/components/Header/Header'
 import Footer from '@/components/Footer/Footer'
 import { PageProvider } from '@/contexts/PageContext'
