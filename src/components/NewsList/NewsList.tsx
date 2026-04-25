@@ -105,19 +105,23 @@ const NewsList = forwardRef<HTMLDivElement, NewsListProps>(
       if (newItems.length === 0) return
 
       if (scrollTriggerRef?.current) {
+        gsap.killTweensOf(newItems)
         gsap.set(newItems, {
-          y: 50,
+          y: 28,
           opacity: 0,
+          willChange: 'transform, opacity',
+          force3D: true,
         })
         scrollTriggerRef.current.refresh()
-        newItems.forEach((item, index) => {
-          gsap.to(item, {
-            y: 0,
-            opacity: 1,
-            duration: 0.6,
-            ease: 'power2.out',
-            delay: index * 0.1,
-          })
+
+        gsap.to(newItems, {
+          y: 0,
+          opacity: 1,
+          duration: 0.75,
+          ease: 'power3.out',
+          stagger: 0.12,
+          clearProps: 'willChange,force3D',
+          overwrite: 'auto',
         })
       } else {
         gsap.set(newItems, {
