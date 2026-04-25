@@ -28,10 +28,6 @@ export default function PhotoParallax({ photos }: PhotoParallaxProps) {
       // 各写真要素を取得
       const photoItems = document.querySelectorAll(`.${styles['photo-item']}`)
 
-      // 写真要素のskewY設定
-      const skewSetter = gsap.quickTo(`.${styles['photo-item']}`, 'skewY')
-      const clamp = gsap.utils.clamp(-10, 10)
-
       if (isPC) {
         // PC: ScrollTriggerベースの実装（安全で確実なスクロール）
 
@@ -60,29 +56,12 @@ export default function PhotoParallax({ photos }: PhotoParallaxProps) {
           )
         })
 
-        // PC用の傾き効果（強化版）
-        let lastScrollTop = 0
-        let animationId: number
-
-        const updateSkew = () => {
-          const currentScrollTop = window.pageYOffset
-          const scrollVelocity = currentScrollTop - lastScrollTop
-          lastScrollTop = currentScrollTop
-          // PCでは傾き効果を強化（0.3 -> 0.5）
-          skewSetter(clamp(scrollVelocity * 0.5))
-          animationId = requestAnimationFrame(updateSkew)
-        }
-
-        updateSkew()
-
         return () => {
-          cancelAnimationFrame(animationId)
           ScrollTrigger.killAll()
         }
       } else {
         // SP: ScrollSmootherベースの実装（滑らかな動き）
 
-        let stopTimer: number | null = null
         let smoother: { kill: () => void } | null = null
 
         // SP用のdata-speed属性設定
@@ -103,18 +82,6 @@ export default function PhotoParallax({ photos }: PhotoParallaxProps) {
               normalizeScroll: false,
               smoothTouch: false,
               ignoreMobileResize: true,
-              onUpdate: (self) => {
-                if (stopTimer) {
-                  clearTimeout(stopTimer)
-                  stopTimer = null
-                }
-                skewSetter(clamp(self.getVelocity() / -80))
-              },
-              onStop: () => {
-                stopTimer = window.setTimeout(() => {
-                  skewSetter(0)
-                }, 100)
-              },
             })
           } catch (error) {
             console.error('ScrollSmoother initialization failed:', error)
@@ -131,9 +98,6 @@ export default function PhotoParallax({ photos }: PhotoParallaxProps) {
             } catch (error) {
               console.warn('ScrollSmoother cleanup failed:', error)
             }
-          }
-          if (stopTimer) {
-            clearTimeout(stopTimer)
           }
           if (document.body) {
             document.body.style.overflow = 'auto'
