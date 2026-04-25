@@ -271,21 +271,13 @@ function HomeContent() {
       trigger: conceptTextRef.current,
       start: 'top bottom-=250',
       id: 'dynamic-text',
+      once: true,
       onEnter: () => {
         gsap.to(lines, {
           yPercent: 0,
           duration: 0.8,
           ease: 'power3.out',
           stagger: 0.15,
-          force3D: true,
-        })
-      },
-      onLeaveBack: () => {
-        gsap.to(lines, {
-          yPercent: 100,
-          duration: 0.5,
-          ease: 'power3.in',
-          stagger: 0.1,
           force3D: true,
         })
       },
@@ -633,6 +625,7 @@ function HomeContent() {
             trigger: conceptCatchphraseRef.current,
             start: 'top bottom-=230',
             id: 'catchphrase',
+            once: true,
             invalidateOnRefresh: true,
             onEnter: () => {
               gsap.to(catchphraseLines, {
@@ -640,14 +633,6 @@ function HomeContent() {
                 duration: 0.8,
                 ease: 'power3.out',
                 stagger: 0.15,
-              })
-            },
-            onLeaveBack: () => {
-              gsap.to(catchphraseLines, {
-                yPercent: 100,
-                duration: 0.5,
-                ease: 'power3.in',
-                stagger: 0.1,
               })
             },
           })

@@ -13,6 +13,7 @@ interface SectionTitleProps {
 const SectionTitle = forwardRef<HTMLHeadingElement, SectionTitleProps>(
   ({ children, tag: Tag = 'h1', disableAnimation = false }, ref) => {
     const internalRef = useRef<HTMLHeadingElement>(null)
+    const isOneTimeAnimation = Tag === 'h2'
 
     // 外部refに内部refを転送
     useImperativeHandle(ref, () => internalRef.current!, [])
@@ -42,7 +43,8 @@ const SectionTitle = forwardRef<HTMLHeadingElement, SectionTitleProps>(
       const scrollTrigger = ScrollTrigger.create({
         trigger: element,
         start: 'top bottom-=100',
-        toggleActions: 'play none none reverse',
+        once: isOneTimeAnimation,
+        toggleActions: isOneTimeAnimation ? 'play none none none' : 'play none none reverse',
         onEnter: () => {
           gsap.to(span, {
             y: '0%',
@@ -51,6 +53,7 @@ const SectionTitle = forwardRef<HTMLHeadingElement, SectionTitleProps>(
           })
         },
         onLeaveBack: () => {
+          if (isOneTimeAnimation) return
           gsap.to(span, {
             y: '100%',
             duration: 0.6,
@@ -65,7 +68,7 @@ const SectionTitle = forwardRef<HTMLHeadingElement, SectionTitleProps>(
           scrollTrigger.kill()
         }
       }
-    }, [disableAnimation])
+    }, [disableAnimation, isOneTimeAnimation])
 
     return (
       <Tag ref={internalRef} className={styles['section-title']}>
