@@ -469,6 +469,10 @@ function HomeContent() {
   // PCでの直接アクセス時の処理は削除（記事詳細ページで処理する）
 
   useEffect(() => {
+    const onBeforeUnload = () => {
+      ScrollTrigger.killAll()
+    }
+
     // 初期ビューポート高さを取得してCSS変数に設定（iOS対応）
     const setInitialViewportHeight = () => {
       const vh = window.innerHeight
@@ -480,6 +484,8 @@ function HomeContent() {
 
     // DOMが完全にマウントされるまで少し待つ
     const timer = setTimeout(() => {
+      if (currentPage !== 'home') return
+
       // デバイス判定
       const isMobile =
         /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
@@ -517,17 +523,12 @@ function HomeContent() {
 
       // data-speed属性が自動的に適用される
 
-      // ScrollTriggerインスタンスを個別管理
-      const scrollTriggers: ScrollTrigger[] = []
-
       // パララックス効果：ヒーロー画像のアニメーション
       let heroParallaxAnimation: gsap.core.Tween | null = null
 
       // 要素が存在することを確認してからアニメーションを実行
       const mainVisualElement = document.querySelector(`.${styles['main-visual']}`)
       const contentWrapperElement = document.querySelector(`.${styles['content-wrapper']}`)
-
-      let contentAnimation: gsap.core.Tween | null = null
 
       if (mainVisualElement) {
         // パララックス効果：親要素（main-image-wrapper）に適用
@@ -594,7 +595,7 @@ function HomeContent() {
           y: '0vh',
         })
 
-        contentAnimation = gsap.to(contentWrapperElement, {
+        gsap.to(contentWrapperElement, {
           scrollTrigger: {
             trigger: contentWrapperElement,
             start: 'top bottom-=100',
@@ -607,65 +608,68 @@ function HomeContent() {
 
       // コンセプトキャッチフレーズとテキストのアニメーション
       if (conceptSectionRef.current && conceptCatchphraseRef.current && conceptTextRef.current) {
-        // キャッチフレーズのアニメーション
-        const catchphraseSplit = new SplitText(conceptCatchphraseRef.current, {
-          type: 'lines',
-          linesClass: 'catchphrase-line',
-          mask: 'lines',
-          autoSplit: true,
-        })
-        const catchphraseLines = [...catchphraseSplit.lines]
+        const initConceptTextAndCatchphrase = () => {
+          if (!conceptCatchphraseRef.current?.isConnected || !conceptTextRef.current?.isConnected) {
+            return
+          }
 
-        catchphraseLines.forEach((line: Element) => {
-          gsap.set(line, {
-            yPercent: 100,
-            willChange: 'transform',
+          // キャッチフレーズ（フォント確定後に行分割しないと ScrollTrigger / 行高さがずれる）
+          const catchphraseSplit = new SplitText(conceptCatchphraseRef.current, {
+            type: 'lines',
+            linesClass: 'catchphrase-line',
+            mask: 'lines',
+            autoSplit: true,
           })
-        })
+          const catchphraseLines = [...catchphraseSplit.lines]
 
-        // テキストのアニメーション - 動的行分割システムを起動
-        if (document.fonts && document.fonts.ready) {
-          document.fonts.ready.then(() => {
-            setTimeout(() => {
-              const dynamicLines = createDynamicLineSplit()
-              if (dynamicLines && dynamicLines.length > 0) {
-                setupDynamicAnimation(dynamicLines)
-                setupResizeObserver()
-              }
-            }, 200)
+          catchphraseLines.forEach((line: Element) => {
+            gsap.set(line, {
+              yPercent: 100,
+              willChange: 'transform',
+            })
           })
-        } else {
+
+          ScrollTrigger.create({
+            trigger: conceptCatchphraseRef.current,
+            start: 'top bottom-=230',
+            id: 'catchphrase',
+            invalidateOnRefresh: true,
+            onEnter: () => {
+              gsap.to(catchphraseLines, {
+                yPercent: 0,
+                duration: 0.8,
+                ease: 'power3.out',
+                stagger: 0.15,
+              })
+            },
+            onLeaveBack: () => {
+              gsap.to(catchphraseLines, {
+                yPercent: 100,
+                duration: 0.5,
+                ease: 'power3.in',
+                stagger: 0.1,
+              })
+            },
+          })
+
+          // テキストのアニメーション - 動的行分割システムを起動
           setTimeout(() => {
+            if (!conceptTextRef.current?.isConnected) return
             const dynamicLines = createDynamicLineSplit()
             if (dynamicLines && dynamicLines.length > 0) {
               setupDynamicAnimation(dynamicLines)
               setupResizeObserver()
             }
-          }, 500)
+          }, 200)
+
+          ScrollTrigger.refresh()
         }
 
-        // キャッチフレーズ用ScrollTrigger
-        ScrollTrigger.create({
-          trigger: conceptCatchphraseRef.current,
-          start: 'top bottom-=230',
-          id: 'catchphrase',
-          onEnter: () => {
-            gsap.to(catchphraseLines, {
-              yPercent: 0,
-              duration: 0.8,
-              ease: 'power3.out',
-              stagger: 0.15,
-            })
-          },
-          onLeaveBack: () => {
-            gsap.to(catchphraseLines, {
-              yPercent: 100,
-              duration: 0.5,
-              ease: 'power3.in',
-              stagger: 0.1,
-            })
-          },
-        })
+        if (document.fonts?.ready) {
+          void document.fonts.ready.then(initConceptTextAndCatchphrase)
+        } else {
+          initConceptTextAndCatchphrase()
+        }
       }
 
       // ニュースセクションのアニメーション
@@ -878,68 +882,23 @@ function HomeContent() {
         initializeMenuAnimations()
       }
 
-      if (heroParallaxAnimation?.scrollTrigger) {
-        scrollTriggers.push(heroParallaxAnimation.scrollTrigger)
-      }
-      if (contentAnimation?.scrollTrigger) {
-        scrollTriggers.push(contentAnimation.scrollTrigger)
-      }
-
       // ページ遷移やリロード時にもkillAll
-      const handleUnload = () => {
-        ScrollTrigger.killAll()
-      }
-      window.addEventListener('beforeunload', handleUnload)
-      window.addEventListener('popstate', handleUnload)
+      window.addEventListener('beforeunload', onBeforeUnload)
+      window.addEventListener('popstate', onBeforeUnload)
 
-      // クリーンアップ
-      return () => {
-        // ScrollSmootherを無効化したためコメントアウト
-        // if (smoother) {
-        //   smoother.kill()
-        // }
-
-        // if (stopTimer) {
-        //   clearTimeout(stopTimer)
-        // }
-
-        // まず全てのScrollTriggerをkill
-        ScrollTrigger.killAll()
-        window.removeEventListener('beforeunload', handleUnload)
-        window.removeEventListener('popstate', handleUnload)
-        // 個別に管理したScrollTriggerを安全にクリーンアップ
-        scrollTriggers.forEach((trigger) => {
-          if (trigger && trigger.kill) {
-            try {
-              if (!trigger.pin || trigger.pin.parentNode) {
-                trigger.kill()
-              }
-            } catch (error) {
-              console.warn('ScrollTrigger cleanup error:', error)
-            }
-          }
-        })
-        if (heroParallaxAnimation) {
-          try {
-            heroParallaxAnimation.kill()
-          } catch (error) {
-            console.warn('Hero parallax animation cleanup error:', error)
-          }
-        }
-        if (contentAnimation) {
-          try {
-            contentAnimation.kill()
-          } catch (error) {
-            console.warn('Content animation cleanup error:', error)
-          }
-        }
-      }
+      requestAnimationFrame(() => {
+        ScrollTrigger.refresh()
+      })
     }, 100) // 100ms待ってからGSAPを初期化
 
     return () => {
       clearTimeout(timer)
+      window.removeEventListener('beforeunload', onBeforeUnload)
+      window.removeEventListener('popstate', onBeforeUnload)
+      ScrollTrigger.killAll()
+      menuAnimationExecutedRef.current = false
     }
-  }, [setupResizeObserver, switchToNextImage, createDynamicLineSplit])
+  }, [currentPage, setupResizeObserver, switchToNextImage, createDynamicLineSplit])
 
   return (
     <>
