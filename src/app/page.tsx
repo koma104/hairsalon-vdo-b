@@ -724,147 +724,42 @@ function HomeContent() {
 
       // メニューセクションのアニメーション
       if (menuSectionRef.current && menuWrapperRef.current) {
-        const initializeMenuAnimations = async () => {
-          // 既に実行済みの場合はスキップ
-          if (menuAnimationExecutedRef.current) return
+        if (!menuAnimationExecutedRef.current) {
+          const menuElements = menuWrapperRef.current.querySelectorAll(
+            `.${styles['menu-subtitle']}, .${styles['menu-list']}`
+          )
 
-          // フォント読み込み完了を待つ
-          await document.fonts.ready
-
-          // メニューアイテムの全spanを取得
-          const menuItems = menuWrapperRef.current?.querySelectorAll(`.${styles['menu-item']}`)
-          const nameSpans: HTMLElement[] = []
-          const priceSpans: HTMLElement[] = []
-
-          menuItems?.forEach((item) => {
-            const spans = item.querySelectorAll('span')
-            if (spans.length >= 2) {
-              nameSpans.push(spans[0] as HTMLElement)
-              priceSpans.push(spans[1] as HTMLElement)
-            }
-          })
-
-          // SplitTextで文字分割
-          const nameSplitTexts: SplitText[] = []
-          const priceSplitTexts: SplitText[] = []
-
-          nameSpans.forEach((span) => {
-            const splitText = new SplitText(span, { type: 'chars' })
-            nameSplitTexts.push(splitText)
-            // 初期状態で全文字を非表示
-            gsap.set(splitText.chars, {
+          if (menuElements.length > 0) {
+            gsap.set(menuElements, {
+              y: 50,
               opacity: 0,
-              backgroundColor: 'transparent',
-              color: 'inherit',
             })
-          })
 
-          priceSpans.forEach((span) => {
-            const splitText = new SplitText(span, { type: 'chars' })
-            priceSplitTexts.push(splitText)
-            // 初期状態で全文字を非表示
-            gsap.set(splitText.chars, {
-              opacity: 0,
-              backgroundColor: 'transparent',
-              color: 'inherit',
-            })
-          })
-
-          // 初期状態を設定（SectionTitleは除外 - 独自アニメーションがあるため）
-          gsap.set(menuWrapperRef.current, {
-            opacity: 0,
-          })
-
-          // メニュータイトルのアニメーション（1度だけ実行）
-          const menuTl = gsap.timeline({
-            scrollTrigger: {
-              trigger: menuSectionRef.current,
-              start: 'top bottom-=200',
-              end: 'bottom top+=100',
-              once: true, // 1回だけ実行
-            },
-          })
-
-          // SectionTitleのアニメーションは削除（コンポーネント内で処理）
-
-          // メニューラッパー（opacityのみ）
-          if (menuWrapperRef.current) {
-            menuTl.to(
-              menuWrapperRef.current,
-              {
-                opacity: 1,
-                duration: 0.8,
-                ease: 'power2.out',
+            const menuTl = gsap.timeline({
+              scrollTrigger: {
+                trigger: menuSectionRef.current,
+                start: 'top bottom-=200',
+                end: 'bottom top+=100',
+                once: true,
               },
-              0.2
-            )
-          }
-
-          // タイプライター効果の実行関数
-          const animateMenuTypewriter = () => {
-            // 1. 全行のメニュー名を同時にタイプライター開始
-            nameSplitTexts.forEach((splitText) => {
-              const chars = splitText.chars as HTMLElement[]
-              chars.forEach((char, charIndex) => {
-                const delay = charIndex * 0.03 // 各行内で30msずつ遅延
-                gsap.to(char, {
-                  opacity: 1,
-                  backgroundColor: '#000',
-                  color: '#fff',
-                  duration: 0.1,
-                  delay: delay,
-                  ease: 'none',
-                  onComplete: () => {
-                    // 文字表示後に背景を透明にして文字色を元に戻す
-                    gsap.to(char, {
-                      backgroundColor: 'transparent',
-                      color: 'inherit',
-                      duration: 0.1,
-                      delay: 0.05,
-                    })
-                  },
-                })
-              })
             })
 
-            // 2. メニュー名完了後に価格を全行同時にタイプライター開始
-            const maxNameDuration = Math.max(...nameSplitTexts.map((st) => st.chars.length)) * 0.03
-            const priceStartDelay = maxNameDuration + 0.3 // 最長のメニュー名完了後300ms待機
-
-            priceSplitTexts.forEach((splitText) => {
-              const chars = splitText.chars as HTMLElement[]
-              chars.forEach((char, charIndex) => {
-                const delay = priceStartDelay + charIndex * 0.025 // 各行内で25msずつ遅延
-                gsap.to(char, {
+            menuElements.forEach((item, index) => {
+              menuTl.to(
+                item,
+                {
+                  y: 0,
                   opacity: 1,
-                  backgroundColor: '#000',
-                  color: '#fff',
-                  duration: 0.08,
-                  delay: delay,
-                  ease: 'none',
-                  onComplete: () => {
-                    // 文字表示後に背景を透明にして文字色を元に戻す
-                    gsap.to(char, {
-                      backgroundColor: 'transparent',
-                      color: 'inherit',
-                      duration: 0.1,
-                      delay: 0.05,
-                    })
-                  },
-                })
-              })
+                  duration: 0.6,
+                  ease: 'power2.out',
+                },
+                0.2 + index * 0.1
+              )
             })
+
+            menuAnimationExecutedRef.current = true
           }
-
-          // メニューラッパー表示後にタイプライター開始
-          menuTl.call(animateMenuTypewriter, [], 0.3)
-
-          // アニメーション実行フラグを設定
-          menuAnimationExecutedRef.current = true
         }
-
-        // async関数を実行
-        initializeMenuAnimations()
       }
 
       // ページ遷移やリロード時にもkillAll
