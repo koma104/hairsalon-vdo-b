@@ -37,41 +37,64 @@ const StaffPage = () => {
   const staffRefs = useRef<(HTMLDivElement | null)[]>([])
 
   useEffect(() => {
+    const scheduleTextAfterImage = (
+      nameElement: HTMLElement | null,
+      titleElement: HTMLElement | null,
+      specialtyElement: HTMLElement | null
+    ) => {
+      if (nameElement) {
+        setTimeout(() => nameElement.classList.add(styles.animate), 800)
+      }
+      if (titleElement) {
+        setTimeout(() => titleElement.classList.add(styles.animate), 900)
+      }
+      if (specialtyElement) {
+        setTimeout(() => specialtyElement.classList.add(styles.animate), 1000)
+      }
+    }
+
+    /** 画像のレイアウト／デコード後に 1 フレーム空けてから clip-path の transition を掛ける */
+    const revealImageThenText = (
+      image: HTMLImageElement,
+      nameElement: HTMLElement | null,
+      titleElement: HTMLElement | null,
+      specialtyElement: HTMLElement | null
+    ) => {
+      const apply = () => {
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            image.classList.add(styles.animate)
+            scheduleTextAfterImage(nameElement, titleElement, specialtyElement)
+          })
+        })
+      }
+      if (image.complete && image.naturalHeight > 0) {
+        apply()
+      } else {
+        image.addEventListener('load', apply, { once: true })
+        image.addEventListener('error', apply, { once: true })
+      }
+    }
+
     // クリップパスアニメーション用のIntersection Observer
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             const staffCard = entry.target as HTMLDivElement
-            const image = staffCard.querySelector(`.${styles['staff-image']}`) as HTMLImageElement
+            const image =
+              (staffCard.querySelector(`img.${styles['staff-image']}`) as HTMLImageElement | null) ??
+              (staffCard.querySelector('img') as HTMLImageElement | null)
             const nameElement = staffCard.querySelector(`.${styles['staff-name']}`) as HTMLElement
             const titleElement = staffCard.querySelector(`.${styles['staff-title']}`) as HTMLElement
             const specialtyElement = staffCard.querySelector(
               `.${styles['staff-specialty']}`
             ) as HTMLElement
 
-            // 画像アニメーション（最初に開始）
             if (image) {
-              image.classList.add(styles.animate)
-            }
-
-            // テキストアニメーション（画像アニメーション完了後に開始）
-            if (nameElement) {
-              setTimeout(() => {
-                nameElement.classList.add(styles.animate)
-              }, 800) // 画像アニメーション完了後
-            }
-
-            if (titleElement) {
-              setTimeout(() => {
-                titleElement.classList.add(styles.animate)
-              }, 900) // 名前の後に100ms遅延
-            }
-
-            if (specialtyElement) {
-              setTimeout(() => {
-                specialtyElement.classList.add(styles.animate)
-              }, 1000) // タイトルの後に100ms遅延
+              revealImageThenText(image, nameElement, titleElement, specialtyElement)
+            } else {
+              scheduleTextAfterImage(nameElement, titleElement, specialtyElement)
             }
           }
         })
@@ -112,6 +135,8 @@ const StaffPage = () => {
                 width={160}
                 height={213}
                 className={styles['staff-image']}
+                priority={index === 0}
+                sizes="(max-width: 767px) 8rem, 12rem"
               />
             </div>
             <div className={styles['staff-info']}>

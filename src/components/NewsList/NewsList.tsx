@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, forwardRef, useEffect, useRef } from 'react'
+import { useState, forwardRef, useEffect, useLayoutEffect, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -45,6 +45,8 @@ const NewsList = forwardRef<HTMLDivElement, NewsListProps>(
     const router = useRouter()
     const { setCurrentPage } = usePageContext()
     const moreButtonRefInternal = useRef<HTMLButtonElement>(null)
+    /** 「more」で増えた表示範囲 [from, to)。paint 前に gsap で隠すため useLayoutEffect で消費する */
+    const moreRevealRangeRef = useRef<{ from: number; to: number } | null>(null)
 
     // クライアントサイドでのみ実行
     useEffect(() => {
@@ -90,6 +92,41 @@ const NewsList = forwardRef<HTMLDivElement, NewsListProps>(
       }
     }, [scrollTriggerRef, isClient, maxItemsSp, maxItemsPc, ref])
 
+    // more で増えたカードは、最初のペイントより前に非表示へ倒す（setTimeout だと一瞬全表示で点滅する）
+    useLayoutEffect(() => {
+      const range = moreRevealRangeRef.current
+      if (!range || range.from >= range.to) return
+      moreRevealRangeRef.current = null
+
+      if (!isClient || !ref || typeof ref !== 'object' || !ref.current) return
+
+      const newsItems = ref.current.querySelectorAll('button[class*="news-item"]')
+      const newItems = Array.from(newsItems).slice(range.from, range.to)
+      if (newItems.length === 0) return
+
+      if (scrollTriggerRef?.current) {
+        gsap.set(newItems, {
+          y: 50,
+          opacity: 0,
+        })
+        scrollTriggerRef.current.refresh()
+        newItems.forEach((item, index) => {
+          gsap.to(item, {
+            y: 0,
+            opacity: 1,
+            duration: 0.6,
+            ease: 'power2.out',
+            delay: index * 0.1,
+          })
+        })
+      } else {
+        gsap.set(newItems, {
+          y: 0,
+          opacity: 1,
+        })
+      }
+    }, [visibleCount, isClient, scrollTriggerRef, ref])
+
     const displayedItems = items.slice(0, visibleCount)
 
     // Intersection Observer for more button animation
@@ -133,47 +170,8 @@ const NewsList = forwardRef<HTMLDivElement, NewsListProps>(
       const { addCount } = getCountSettings()
       const newCount = visibleCount + addCount
 
-      // 新しく追加される要素を最初から非表示状態でレンダリング
+      moreRevealRangeRef.current = { from: visibleCount, to: newCount }
       setVisibleCount(newCount)
-
-      // 新しく追加された要素にアニメーションを適用
-      setTimeout(() => {
-        if (ref && typeof ref === 'object' && ref.current) {
-          const newsItems = ref.current.querySelectorAll('button[class*="news-item"]')
-          const newItems = Array.from(newsItems).slice(visibleCount, newCount)
-
-          if (newItems.length > 0) {
-            if (scrollTriggerRef?.current) {
-              // ホームページの場合：アニメーション適用
-              // 初期状態を設定
-              gsap.set(newItems, {
-                y: 50,
-                opacity: 0,
-              })
-
-              // ScrollTriggerを再実行して新しい要素も含める
-              scrollTriggerRef.current.refresh()
-
-              // 新しい要素を直接アニメーション（ScrollTriggerの制御下で）
-              newItems.forEach((item, index) => {
-                gsap.to(item, {
-                  y: 0,
-                  opacity: 1,
-                  duration: 0.6,
-                  ease: 'power2.out',
-                  delay: index * 0.1, // 0.1秒ずつ遅延
-                })
-              })
-            } else {
-              // ニュース一覧ページの場合：即座に表示
-              gsap.set(newItems, {
-                y: 0,
-                opacity: 1,
-              })
-            }
-          }
-        }
-      }, 50) // DOM更新を待つ（時間を短縮）
     }
 
     return (
