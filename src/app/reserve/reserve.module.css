@@ -43,11 +43,6 @@
   place-items: center;
   max-width: calc(var(--spacing-3xl) * 4);
   margin-inline: auto;
-
-  @media (min-width: 768px) {
-    max-width: calc(var(--spacing-3xl) * 4);
-    margin-inline: auto;
-  }
 }
 
 /* reserve-button-wrapperの手前の要素に自動的にマージンを適用 */

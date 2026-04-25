@@ -63,6 +63,7 @@ select {
 
   --spacing-xxs: calc(var(--base-unit) * 0.5); /* 4px */
   --spacing-xs: calc(var(--base-unit) * 1); /* 8px */
+  --spacing-s: calc(var(--base-unit) * 1.5); /* 12px */
   --spacing-sm: calc(var(--base-unit) * 2); /* 16px */
   --spacing-md: calc(var(--base-unit) * 2.5); /* 20px */
   --spacing-lg: calc(var(--base-unit) * 3); /* 24px */
